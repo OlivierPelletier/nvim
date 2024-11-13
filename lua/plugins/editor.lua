@@ -4,7 +4,16 @@ return {
     main = "ibl",
     ---@module "ibl"
     ---@type ibl.config
-    opts = {},
+    config = function()
+      require("ibl").setup({
+        indent = {
+          char = "┆",
+        },
+        scope = {
+          enabled = true,
+        },
+      })
+    end,
   },
   {
     "windwp/nvim-autopairs",
@@ -14,15 +23,15 @@ return {
     -- this is equivalent to setup({}) function
   },
   {
+
+    "numToStr/Comment.nvim",
+    config = true,
+  },
+  {
     "tpope/vim-surround",
     "RRethy/vim-illuminate",
     "m-demare/hlargs.nvim",
     "danilamihailov/beacon.nvim",
     "airblade/vim-gitgutter",
-  },
-  {
-
-    "numToStr/Comment.nvim",
-    config = true,
   },
 }
