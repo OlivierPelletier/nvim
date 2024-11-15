@@ -14,4 +14,19 @@ return {
       },
     },
   },
+  {
+    "petertriho/nvim-scrollbar",
+    config = function()
+      local colors = require("monokai-pro.colorscheme")
+
+      require("scrollbar").setup({
+        handle = {
+          color = colors.editor.selectionHighlightBackground,
+        },
+        handlers = {
+          gitsigns = true,
+        },
+      })
+    end,
+  },
 }
