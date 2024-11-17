@@ -50,4 +50,11 @@ cargo install --locked tree-sitter-cli
 
 ### Mac OS
 
+```bash
+brew install neovim lazygit ripgrep fd luarocks ast-grep
+rustup component add rust-analyzer
+npm install -g neovim
+
+```
+
 ### Windows
