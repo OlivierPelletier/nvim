@@ -27,6 +27,9 @@ sudo install lazygit -D -t /usr/local/bin/
 
 # Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+rustup toolchain install nightly
+rustup default nightly
+rustup component add rust-analyzer --toolchain nightly
 
 # Java
 curl -s "https://get.sdkman.io" | bash
