@@ -11,7 +11,7 @@ Refer to the [documentation](https://lazyvim.github.io/installation) to get star
 # Basic tools
 sudo add-apt-repository ppa:git-core/ppa
 sudo apt update
-sudo apt install git tar curl wget unzip htop snapd ripgrep fd-find gzip python3-venv luarocks
+sudo apt install git tar curl wget unzip htop snapd ripgrep fd-find gzip python3-venv luarocks fish
 
 # NeoVim version 10+
 sudo snap install --beta nvim --classic
@@ -43,11 +43,13 @@ python3 -m pip install --break-system-packages --user --upgrade pynvim
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 source ~/.bashrc
 nvm install lts/jod
-npm install -g neovim
+npm install -g neovim prettier
 
 # Tree-sitter
 cargo install --locked tree-sitter-cli
 
+# JSON
+npm install -g vscode-langservers-extracted
 
 ```
 
