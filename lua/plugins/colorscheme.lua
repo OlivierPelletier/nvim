@@ -12,7 +12,7 @@ return {
       styles = {
         sidebars = "transparent",
         floats = "transparent",
-      }
-    }
-  }
+      },
+    },
+  },
 }
