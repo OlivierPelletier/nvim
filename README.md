@@ -5,6 +5,10 @@ Refer to the [documentation](https://lazyvim.github.io/installation) to get star
 
 ## Cookbook
 
+### Fonts
+
+Install font here: [https://www.nerdfonts.com/font-downloads](https://www.nerdfonts.com/font-downloads)
+
 ### Ubuntu
 
 ```bash
@@ -56,9 +60,28 @@ npm install -g vscode-langservers-extracted
 ### Mac OS
 
 ```bash
-brew install neovim lazygit ripgrep fd luarocks ast-grep
-rustup component add rust-analyzer
-npm install -g neovim
+# Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+brew install git neovim lazygit ripgrep fd luarocks ast-grep nvm wget fish python3
+
+# LazyVim
+git clone https://github.com/OlivierPelletier/nvim.git ~/.config/nvim
+
+# Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+rustup toolchain install nightly
+rustup default nightly
+rustup component add rust-analyzer --toolchain nightly
+cargo install --locked tree-sitter-cli
+
+# NodeJS
+nvm install lts/jod
+npm install -g neovim prettier 
+
+# Python
+python3 -m pip install --break-system-packages --user --upgrade pynvim
+
 
 ```
 
