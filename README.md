@@ -66,7 +66,7 @@ npm install -g vscode-langservers-extracted
 brew install git neovim lazygit ripgrep fd luarocks ast-grep nvm wget fish python3
 
 # LazyVim
-git clone https://github.com/OlivierPelletier/nvim.git ~/.config/nvim
+git clone git@github.com:OlivierPelletier/nvim.git ~/.config/nvim
 
 # Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -82,6 +82,14 @@ npm install -g neovim prettier
 # Python
 python3 -m pip install --break-system-packages --user --upgrade pynvim
 
+# Java
+brew install sdkman-cli
+
+## add to .zshrc
+export SDKMAN_DIR=$(brew --prefix sdkman-cli)/libexec
+[[ -s "${SDKMAN_DIR}/bin/sdkman-init.sh" ]] && source "${SDKMAN_DIR}/bin/sdkman-init.sh"
+
+sdk install java
 
 ```
 
