@@ -15,7 +15,7 @@ Install font here: [https://www.nerdfonts.com/font-downloads](https://www.nerdfo
 # Basic tools
 sudo add-apt-repository ppa:git-core/ppa
 sudo apt update
-sudo apt install git tar curl wget unzip htop snapd ripgrep fd-find gzip python3-venv luarocks fish
+sudo apt install git tar curl wget unzip htop snapd ripgrep fd-find gzip python3-venv luarocks fish fzf
 
 # NeoVim version 10+
 sudo snap install --beta nvim --classic
@@ -63,7 +63,7 @@ npm install -g vscode-langservers-extracted
 # Homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-brew install git neovim lazygit ripgrep fd luarocks ast-grep nvm wget fish python3
+brew install git neovim lazygit ripgrep fd luarocks ast-grep nvm wget fish python3 fzf
 
 # LazyVim
 git clone git@github.com:OlivierPelletier/nvim.git ~/.config/nvim
