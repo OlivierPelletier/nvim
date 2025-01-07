@@ -63,7 +63,7 @@ npm install -g vscode-langservers-extracted
 # Homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-brew install git neovim lazygit ripgrep fd luarocks ast-grep nvm wget fish python3 fzf
+brew install git neovim lazygit ripgrep fd luarocks ast-grep nvm wget fish python3 fzf gpg
 
 # LazyVim
 git clone git@github.com:OlivierPelletier/nvim.git ~/.config/nvim
