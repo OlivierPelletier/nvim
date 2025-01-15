@@ -93,4 +93,12 @@ return {
       require("scope").setup({})
     end,
   },
+  {
+    "ibhagwan/fzf-lua",
+    opts = {
+      defaults = {
+        formatter = "path.filename_first"
+      }
+    }
+  }
 }
