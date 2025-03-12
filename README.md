@@ -63,7 +63,7 @@ npm install -g vscode-langservers-extracted
 # Homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-brew install git neovim lazygit ripgrep fd luarocks ast-grep nvm wget fish python3 fzf gpg
+brew install git neovim lazygit ripgrep fd luarocks ast-grep nvm wget python3 fzf gpg
 
 # LazyVim
 git clone git@github.com:OlivierPelletier/nvim.git ~/.config/nvim
@@ -80,7 +80,11 @@ nvm install lts/jod
 npm install -g neovim prettier 
 
 # Python
-python3 -m pip install --break-system-packages --user --upgrade pynvim
+brew install pyenv pipx
+pyenv install 3.12
+pyenv global 3.12
+pip install pynvim
+pipx install poetry
 
 # Java
 brew install sdkman-cli
