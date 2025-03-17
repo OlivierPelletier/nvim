@@ -100,6 +100,7 @@ return {
       ---@diagnostic disable-next-line: missing-parameter
       harpoon.setup()
 
+      -- Windows
       vim.keymap.set("n", "<M-q>", function()
         harpoon:list():add()
       end, { desc = "Harpoon Add" })
@@ -125,6 +126,35 @@ return {
         harpoon:list():prev()
       end, { desc = "Harpoon Previous" })
       vim.keymap.set("n", "<M-e>", function()
+        harpoon:list():next()
+      end, { desc = "Harpoon Next" })
+
+      -- Mac OS
+      vim.keymap.set("n", "œ", function()
+        harpoon:list():add()
+      end, { desc = "Harpoon Add" })
+      vim.keymap.set("n", "|", function()
+        harpoon.ui:toggle_quick_menu(harpoon:list())
+      end, { desc = "Harpoon Quick Menu" })
+
+      vim.keymap.set("n", "¡", function()
+        harpoon:list():select(1)
+      end, { desc = "Harpoon Select 1" })
+      vim.keymap.set("n", "@", function()
+        harpoon:list():select(2)
+      end, { desc = "Harpoon Select 2" })
+      vim.keymap.set("n", "£", function()
+        harpoon:list():select(3)
+      end, { desc = "Harpoon Select 3" })
+      vim.keymap.set("n", "€", function()
+        harpoon:list():select(4)
+      end, { desc = "Harpoon Select 4" })
+
+      -- Toggle previous & next buffers stored within Harpoon list
+      vim.keymap.set("n", "∑", function()
+        harpoon:list():prev()
+      end, { desc = "Harpoon Previous" })
+      vim.keymap.set("n", "∂", function()
         harpoon:list():next()
       end, { desc = "Harpoon Next" })
     end,
