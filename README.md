@@ -17,6 +17,8 @@ Install font here: [https://www.nerdfonts.com/font-downloads](https://www.nerdfo
 
 brew install git neovim lazygit ripgrep fd luarocks ast-grep wget fzf gpg
 
+## Find a way to install lua 5.1 (https://lua.org/start.html#installing)
+
 # LazyVim
 git clone git@github.com:OlivierPelletier/nvim.git ~/.config/nvim
 
