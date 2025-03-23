@@ -47,12 +47,6 @@ return {
     },
   },
   {
-    "tiagovla/scope.nvim",
-    config = function()
-      require("scope").setup({})
-    end,
-  },
-  {
     "ibhagwan/fzf-lua",
     opts = {
       defaults = {
