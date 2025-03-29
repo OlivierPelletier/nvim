@@ -25,5 +25,11 @@ return {
       },
     },
   },
-  --
+  -- Markdown
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    opts = {
+      enabled = false,
+    },
+  },
 }

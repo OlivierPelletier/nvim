@@ -153,4 +153,26 @@ return {
       end, { desc = "Harpoon Next" })
     end,
   },
+  {
+    "saghen/blink.cmp",
+    opts = {
+      sources = {
+        providers = {
+          copilot = {
+            name = "copilot",
+            module = "blink-cmp-copilot",
+            score_offset = -100,
+            async = true,
+          },
+        },
+      },
+      keymap = {
+        ["<C-space>"] = {
+          function(cmp)
+            cmp.show({ providers = { "copilot" } })
+          end,
+        },
+      },
+    },
+  },
 }
