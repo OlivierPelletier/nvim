@@ -4,3 +4,4 @@
 
 vim.g.autoformat = false
 -- vim.opt.mouse = ""
+vim.opt.conceallevel = 0
