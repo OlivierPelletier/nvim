@@ -1,5 +1,8 @@
 return {
   {
+    import = "plugins.lang",
+  },
+  {
     "folke/snacks.nvim",
     opts = {
       picker = {
