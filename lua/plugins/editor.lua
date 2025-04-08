@@ -24,6 +24,7 @@ return {
       local colors = require("catppuccin.palettes").get_palette("mocha")
 
       require("scrollbar").setup({
+      hide_if_all_visible = true,
         handle = {
           color = colors.overlay2,
         },
