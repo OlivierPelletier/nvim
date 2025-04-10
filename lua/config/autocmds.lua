@@ -15,3 +15,13 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.spell = false
   end,
 })
+
+vim.api.nvim_create_autocmd('BufEnter', {
+    pattern = 'copilot-*',
+    callback = function()
+        -- Set buffer-local options
+        vim.opt_local.relativenumber = false
+        vim.opt_local.number = false
+        vim.opt_local.conceallevel = 1
+    end
+})

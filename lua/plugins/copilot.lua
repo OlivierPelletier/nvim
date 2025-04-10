@@ -6,13 +6,15 @@ return {
     event = "BufReadPost",
     opts = {
       suggestion = {
-        enabled = not vim.g.ai_cmp,
-        auto_trigger = true,
-        hide_during_completion = vim.g.ai_cmp,
+        enabled = true,
+        auto_trigger = false,
+        hide_during_completion = true,
+        trigger_on_accept = true,
         keymap = {
-          accept = false, -- handled by nvim-cmp / blink.cmp
-          next = "<M-]>",
-          prev = "<M-[>",
+          accept = false, -- Handled by blink
+          next = false, -- Handled by blink
+          prev = false, -- Handled by blink
+          dismiss = "<C-c>",
         },
       },
       panel = { enabled = false },
@@ -23,18 +25,38 @@ return {
     },
   },
   {
-    "zbirenbaum/copilot.lua",
-    opts = function()
-      LazyVim.cmp.actions.ai_accept = function()
-        if require("copilot.suggestion").is_visible() then
-          LazyVim.create_undo()
-          require("copilot.suggestion").accept()
-          return true
-        end
-      end
-    end,
+    "saghen/blink.cmp",
+    optional = true,
+    opts = {
+      keymap = {
+        ["<S-Tab>"] = {
+          function(cmp)
+            cmp.hide()
+            require("copilot.suggestion").prev()
+          end,
+        },
+        ["<Tab>"] = {
+          function(cmp)
+            cmp.hide()
+            require("copilot.suggestion").next()
+          end,
+        },
+        ["<CR>"] = {
+          function(cmp)
+            if require("copilot.suggestion").is_visible() then
+              require("copilot.suggestion").accept()
+              require("copilot.suggestion").dismiss()
+              cmp.show()
+            elseif cmp.is_visible() then
+              cmp.accept()
+            else
+              vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "n", false)
+            end
+          end,
+        },
+      },
+    },
   },
-  { "giuxtaposition/blink-cmp-copilot" },
   {
     "nvim-lualine/lualine.nvim",
     optional = true,
@@ -52,29 +74,5 @@ return {
         end)
       )
     end,
-  },
-  {
-    "saghen/blink.cmp",
-    optional = true,
-    dependencies = { "giuxtaposition/blink-cmp-copilot" },
-    opts = {
-      sources = {
-        providers = {
-          copilot = {
-            name = "copilot",
-            module = "blink-cmp-copilot",
-            score_offset = 100,
-            async = true,
-          },
-        },
-      },
-      keymap = {
-        ["<C-space>"] = {
-          function(cmp)
-            cmp.show({ providers = { "copilot" } })
-          end,
-        },
-      },
-    },
   },
 }
