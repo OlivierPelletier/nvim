@@ -27,7 +27,6 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 rustup toolchain install nightly
 rustup default nightly
 rustup component add rust-analyzer --toolchain nightly
-cargo install --locked tree-sitter-cli
 
 # NodeJS
 brew install nvm
