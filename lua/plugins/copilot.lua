@@ -29,13 +29,19 @@ return {
     optional = true,
     opts = {
       keymap = {
+        ["<C-x>"] = {
+          function(cmp)
+            cmp.hide()
+            require("copilot.suggestion").dismiss()
+          end,
+        },
         ["<S-Tab>"] = {
           function(cmp)
             cmp.hide()
             require("copilot.suggestion").prev()
           end,
         },
-        ["<Tab>"] = {
+        ["<M-Tab>"] = {
           function(cmp)
             cmp.hide()
             require("copilot.suggestion").next()
