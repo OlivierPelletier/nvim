@@ -23,10 +23,9 @@ brew install git neovim lazygit ripgrep fd luarocks ast-grep wget fzf gpg
 git clone git@github.com:OlivierPelletier/nvim.git ~/.config/nvim
 
 # Rust
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-rustup toolchain install nightly
-rustup default nightly
-rustup component add rust-analyzer --toolchain nightly
+brew install rustup
+rustup-init
+rustup component add rust-analyzer
 
 # NodeJS
 brew install nvm
