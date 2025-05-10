@@ -25,3 +25,10 @@ vim.api.nvim_create_autocmd('BufEnter', {
         vim.opt_local.conceallevel = 1
     end
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    vim.diagnostic.enable(false)
+  end,
+})
