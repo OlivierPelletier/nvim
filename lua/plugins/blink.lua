@@ -7,7 +7,7 @@ return {
     },
     opts = {
       sources = {
-        default = { "lsp", "path", "snippets" },
+        default = { "lsp" },
       },
     },
   },
