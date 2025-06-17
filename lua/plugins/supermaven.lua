@@ -5,7 +5,7 @@ return {
       require("supermaven-nvim").setup({
         keymaps = {
           accept_suggestion = "<Tab>",
-          clear_suggestion = "<C-x>",
+          clear_suggestion = "<C-k>",
           accept_word = "<C-j>",
         },
         ignore_filetypes = { "bigfile", "snacks_input", "snacks_notif" },
@@ -24,8 +24,8 @@ return {
       vim.api.nvim_create_autocmd("User", {
         pattern = "BlinkCmpMenuOpen",
         callback = function()
-          require("supermaven-nvim.completion_preview").on_dispose_inlay()
           require("supermaven-nvim.completion_preview").disable_inline_completion = true
+          require("supermaven-nvim.completion_preview").on_dispose_inlay()
         end,
       })
 
@@ -33,6 +33,10 @@ return {
         pattern = "BlinkCmpMenuClose",
         callback = function()
           require("supermaven-nvim.completion_preview").disable_inline_completion = false
+          local buffer = vim.api.nvim_get_current_buf()
+          local file_name = vim.api.nvim_buf_get_name(buffer)
+          require("supermaven-nvim.binary.binary_handler"):on_update(buffer, file_name, "text_changed")
+          require("supermaven-nvim.binary.binary_handler"):poll_once()
         end,
       })
     end,
@@ -46,11 +50,7 @@ return {
           function(cmp)
             if cmp.is_visible() then
               require("blink.cmp").hide()
-              local buffer = vim.api.nvim_get_current_buf()
-              local file_name = vim.api.nvim_buf_get_name(buffer)
-
-              require("supermaven-nvim.binary.binary_handler"):on_update(buffer, file_name, "text_changed")
-              require("supermaven-nvim.binary.binary_handler"):poll_once()
+              require("supermaven-nvim.completion_preview").disable_inline_completion = false
             else
               require("supermaven-nvim.completion_preview").on_dispose_inlay()
             end
