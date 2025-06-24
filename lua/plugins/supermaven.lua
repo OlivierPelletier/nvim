@@ -4,7 +4,7 @@ return {
     config = function()
       require("supermaven-nvim").setup({
         keymaps = {
-          accept_suggestion = "<C-f>",
+          accept_suggestion = "<Tab>",
           clear_suggestion = "<C-k>",
           accept_word = "<C-j>",
         },
@@ -15,7 +15,7 @@ return {
         },
         log_level = "info",
         disable_inline_completion = false,
-        disable_keymaps = false,
+        disable_keymaps = true,
         condition = function()
           return false
         end,
@@ -48,11 +48,29 @@ return {
       keymap = {
         ["<C-x>"] = {
           function(cmp)
+            local suggestion = require("supermaven-nvim.completion_preview")
+            local blink = require("blink.cmp")
             if cmp.is_visible() then
-              require("blink.cmp").hide()
-              require("supermaven-nvim.completion_preview").disable_inline_completion = false
+              blink.hide()
+              suggestion.disable_inline_completion = false
             else
-              require("supermaven-nvim.completion_preview").on_dispose_inlay()
+              suggestion.on_dispose_inlay()
+            end
+          end,
+        },
+        ["<C-f>"] = {
+          function(cmp)
+            local suggestion = require("supermaven-nvim.completion_preview")
+            local blink = require("blink.cmp")
+            if cmp.is_visible() then
+              blink.hide()
+              suggestion.disable_inline_completion = false
+            else
+              if suggestion.has_suggestion() then
+                vim.schedule(function()
+                  suggestion.on_accept_suggestion()
+                end)
+              end
             end
           end,
         },
