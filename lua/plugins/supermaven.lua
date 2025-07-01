@@ -77,4 +77,18 @@ return {
       },
     },
   },
+  {
+    "nvim-lualine/lualine.nvim",
+    optional = true,
+    event = "VeryLazy",
+    opts = function(_, opts)
+      table.insert(
+        opts.sections.lualine_x,
+        2,
+        LazyVim.lualine.status(LazyVim.config.icons.kinds.Supermaven, function()
+          return require("supermaven-nvim.api").is_running() and "ok" or "error"
+        end)
+      )
+    end,
+  },
 }
