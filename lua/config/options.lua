@@ -6,4 +6,4 @@ vim.g.autoformat = false
 -- vim.opt.mouse = ""
 vim.opt.conceallevel = 0
 vim.opt.swapfile = false
-vim.opt.shell = "/usr/bin/fish"
+vim.opt.shell = "fish"

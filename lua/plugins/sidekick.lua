@@ -5,7 +5,8 @@ return {
       -- add any options here
     },
     keys = {
-      { "<C-f>", LazyVim.cmp.map({ "ai_nes" }, "<C-f>"), mode = { "n" }, expr = true },
+      { "<C-f>", LazyVim.cmp.map({ "ai_nes" }, "<C-f>"), mode = { "n", "s", "v" }, expr = true },
+      { "<C-F>", LazyVim.cmp.map({ "ai_nes" }, "<C-F>"), mode = { "n", "s", "v" }, expr = true },
       { "<Tab>", false, mode = { "n" }, expr = true },
     },
   },
