@@ -2,12 +2,10 @@ return {
   {
     "folke/sidekick.nvim",
     opts = {
-      -- add any options here
     },
     keys = {
-      { "<C-f>", LazyVim.cmp.map({ "ai_nes" }, "<C-f>"), mode = { "n", "s", "v" }, expr = true },
-      { "<C-F>", LazyVim.cmp.map({ "ai_nes" }, "<C-F>"), mode = { "n", "s", "v" }, expr = true },
-      { "<Tab>", false, mode = { "n" }, expr = true },
+      { "<c-f>", LazyVim.cmp.map({ "ai_nes" }, "<c-f>"), desc = "AI next suggestion", mode = { "n", "s", "v", "x" }, expr = true },
+      { "<tab>", false, mode = { "n" }, expr = true },
     },
   },
   {
