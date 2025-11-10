@@ -44,4 +44,7 @@ pipx install poetry
 curl -s "https://get.sdkman.io" | bash
 sdk install java
 
+# Go
+brew install go
+
 ```
