@@ -29,3 +29,15 @@ vim.keymap.set("x", "<C-f>", function()
     return true
   end
 end, { desc = "plz AI Next" })
+vim.keymap.set(
+  "n",
+  "<leader>aE",
+  "<cmd>Sidekick nes disable<cr><cmd>lua vim.lsp.inline_completion.enable(false)<cr>",
+  { desc = "Disable AI suggestions" }
+)
+vim.keymap.set(
+  "n",
+  "<leader>ae",
+  "<cmd>Sidekick nes enable<cr> <cmd>lua vim.lsp.inline_completion.enable(true)<cr>",
+  { desc = "Enable AI suggestions" }
+)
