@@ -28,6 +28,10 @@ vim.o.completeopt = "menu,menuone,noselect"
 
 vim.g.mapleader = " "
 
+vim.diagnostic.config({
+  virtual_text = true,
+})
+
 vim.pack.add({
   { src = "https://github.com/catppuccin/nvim" },
   { src = "https://github.com/folke/which-key.nvim" },
@@ -67,7 +71,8 @@ vim.keymap.set("n", "<leader>cf", vim.lsp.buf.format, { desc = "Lsp Format code"
 vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { desc = "Lsp Rename" })
 vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Lsp Code Action" })
 vim.keymap.set("n", "<leader>cR", function() Snacks.rename.rename_file() end, { desc = "Rename File" })
-vim.keymap.set("n", "<leader>e", MiniFiles.open, { desc = "Files explorer" })
+vim.keymap.set("n", "<leader>e", MiniFiles.open, { desc = "Files Explorer" })
+vim.keymap.set("n", "<leader>fm", MiniFiles.open, { desc = "Files Explorer" })
 vim.keymap.set("n", "<leader>/", Snacks.picker.grep, { desc = "Grep" })
 vim.keymap.set("n", "<leader><space>", Snacks.picker.files, { desc = "Find Files" })
 vim.keymap.set("n", "<leader>,", function() Snacks.picker.buffers() end, { desc = "Buffers" })
@@ -76,14 +81,10 @@ vim.keymap.set("n", "gD", function() Snacks.picker.lsp_declarations() end, { des
 vim.keymap.set("n", "gr", function() Snacks.picker.lsp_references() end, { desc = "References", nowait = true })
 vim.keymap.set("n", "gI", function() Snacks.picker.lsp_implementations() end, { desc = "Goto Implementation" })
 vim.keymap.set("n", "gy", function() Snacks.picker.lsp_type_definitions() end, { desc = "Goto T[y]pe Definition" })
-vim.keymap.set("n", "gai", function() Snacks.picker.lsp_incoming_calls() end, { desc = "C[a]lls Incoming" })
-vim.keymap.set("n", "gao", function() Snacks.picker.lsp_outgoing_calls() end, { desc = "C[a]lls Outgoing" })
-vim.keymap.set("n", "<leader>ss", function() Snacks.picker.lsp_symbols() end, { desc = "LSP Symbols" })
-vim.keymap.set("n", "<leader>sS", function() Snacks.picker.lsp_workspace_symbols() end,
-  { desc = "LSP Workspace Symbols" })
 vim.keymap.set("n", "<leader>sj", function() Snacks.picker.jumps() end, { desc = "Jumps" })
 vim.keymap.set("n", "<leader>gg", function() Snacks.lazygit() end, { desc = "Lazygit" })
 vim.keymap.set("n", "<leader>bd", function() Snacks.bufdelete() end, { desc = "Delete Buffer" })
+vim.keymap.set("n", "<leader>bo", function() Snacks.bufdelete.other() end, { desc = "Delete Other Buffers" })
 vim.keymap.set({ "n", "t" }, "<c-/>", function() Snacks.terminal() end, { desc = "Toggle Terminal" })
 vim.keymap.set("n", "<M-q>", function() Harpoon:list():add() end, { desc = "Harpoon Add" })
 vim.keymap.set("n", "<M-/>", function() Harpoon.ui:toggle_quick_menu(Harpoon:list()) end, { desc = "Harpoon Quick Menu" })
@@ -96,7 +97,7 @@ Catppuccin.setup({
   transparent_background = true
 })
 WhichKey.setup({
-  preset = "helix"
+  preset = "helix",
 })
 Mason.setup()
 TreeSitter.setup({
@@ -121,6 +122,16 @@ MiniFiles.setup()
 MiniIcons.setup()
 NvimWebDevIcons.setup()
 Harpoon.setup()
+
+WhichKey.add({
+  { "<leader>f", group = "files" },
+  { "<leader>b", group = "buffers" },
+  { "<leader>c", group = "code" },
+  { "<leader>s", group = "search" },
+  { "<leader>u", group = "toggles" },
+  { "<leader>g", group = "git" },
+  { "<leader>w", proxy = "<c-w>",  group = "windows" },
+})
 
 vim.lsp.enable({ "lua_ls", "gopls", "rust-analyzer" })
 vim.lsp.inlay_hint.enable(true)
