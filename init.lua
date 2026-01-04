@@ -2,6 +2,7 @@ vim.o.number = true
 vim.o.relativenumber = false
 vim.o.signcolumn = "yes"
 vim.o.wrap = false
+vim.o.shell = "fish"
 
 vim.o.tabstop = 2
 vim.o.shiftwidth = 2
@@ -34,22 +35,27 @@ vim.pack.add({
   { src = "https://github.com/mason-org/mason.nvim" },
   { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
   { src = "https://github.com/nvim-lua/plenary.nvim" },
-  { src = "https://github.com/ThePrimeagen/Harpoon",           version = "harpoon2" },
   { src = "https://github.com/folke/snacks.nvim" },
-  { src = "https://github.com/nvim-mini/mini.files" }
+  { src = "https://github.com/nvim-mini/mini.files" },
+  { src = "https://github.com/nvim-mini/mini.icons" },
+  { src = "https://github.com/nvim-tree/nvim-web-devicons" },
+  { src = "https://github.com/ThePrimeagen/Harpoon",           version = "harpoon2" },
 })
 
+local Catppuccin = require("catppuccin")
 local WhichKey = require("which-key")
 local Mason = require("mason")
 local TreeSitter = require("nvim-treesitter")
 local Snacks = require("snacks")
-local Harpoon = require("harpoon")
 local MiniFiles = require("mini.files")
+local MiniIcons = require("mini.icons")
+local NvimWebDevIcons = require("nvim-web-devicons")
+local Harpoon = require("harpoon")
 
 vim.keymap.set({ "n", "v", "x" }, "<C-S>", ":write<CR>", { desc = "Save" })
 vim.keymap.set({ "i" }, "<C-S>", ":write<CR>", { desc = "Save" })
 vim.keymap.set("i", "<C-Space>", "<C-x><C-o>", { noremap = true })
-vim.keymap.set("i", ".", function()  return ".<C-x><C-o>" end, { expr = true, noremap = true })
+vim.keymap.set("i", ".", function() return ".<C-x><C-o>" end, { expr = true, noremap = true })
 vim.keymap.set("i", "<C-f>", function()
   if vim.fn.pumvisible() == 1 then
     return vim.api.nvim_replace_termcodes("<C-n><C-y>", true, false, true)
@@ -63,7 +69,7 @@ vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Lsp Code Ac
 vim.keymap.set("n", "<leader>cR", function() Snacks.rename.rename_file() end, { desc = "Rename File" })
 vim.keymap.set("n", "<leader>e", MiniFiles.open, { desc = "Files explorer" })
 vim.keymap.set("n", "<leader>/", Snacks.picker.grep, { desc = "Grep" })
-vim.keymap.set("n", "<leader><space>", Snacks.picker.smart, { desc = "Find Files" })
+vim.keymap.set("n", "<leader><space>", Snacks.picker.files, { desc = "Find Files" })
 vim.keymap.set("n", "<leader>,", function() Snacks.picker.buffers() end, { desc = "Buffers" })
 vim.keymap.set("n", "gd", function() Snacks.picker.lsp_definitions() end, { desc = "Goto Definition" })
 vim.keymap.set("n", "gD", function() Snacks.picker.lsp_declarations() end, { desc = "Goto Declaration" })
@@ -86,6 +92,9 @@ vim.keymap.set("n", "<M-2>", function() Harpoon:list():select(2) end, { desc = "
 vim.keymap.set("n", "<M-3>", function() Harpoon:list():select(3) end, { desc = "Harpoon Select 3" })
 vim.keymap.set("n", "<M-4>", function() Harpoon:list():select(4) end, { desc = "Harpoon Select 4" })
 
+Catppuccin.setup({
+  transparent_background = true
+})
 WhichKey.setup({
   preset = "helix"
 })
@@ -109,6 +118,8 @@ Snacks.setup({
   words = { enabled = false },
 })
 MiniFiles.setup()
+MiniIcons.setup()
+NvimWebDevIcons.setup()
 Harpoon.setup()
 
 vim.lsp.enable({ "lua_ls", "gopls", "rust-analyzer" })
