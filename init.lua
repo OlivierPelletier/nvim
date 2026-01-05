@@ -37,24 +37,28 @@ vim.pack.add({
   { src = "https://github.com/folke/which-key.nvim" },
   { src = "https://github.com/neovim/nvim-lspconfig" },
   { src = "https://github.com/mason-org/mason.nvim" },
+  { src = "https://github.com/mason-org/mason-lspconfig.nvim" },
   { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
   { src = "https://github.com/nvim-lua/plenary.nvim" },
   { src = "https://github.com/folke/snacks.nvim" },
   { src = "https://github.com/nvim-mini/mini.files" },
   { src = "https://github.com/nvim-mini/mini.icons" },
   { src = "https://github.com/nvim-tree/nvim-web-devicons" },
-  { src = "https://github.com/ThePrimeagen/Harpoon",           version = "harpoon2" },
+  { src = "https://github.com/ThePrimeagen/harpoon",           version = "harpoon2" },
+  { src = "https://github.com/j-hui/fidget.nvim" }
 })
 
 local Catppuccin = require("catppuccin")
-local WhichKey = require("which-key")
-local Mason = require("mason")
-local TreeSitter = require("nvim-treesitter")
-local Snacks = require("snacks")
-local MiniFiles = require("mini.files")
 local MiniIcons = require("mini.icons")
 local NvimWebDevIcons = require("nvim-web-devicons")
+local Snacks = require("snacks")
+local WhichKey = require("which-key")
+local TreeSitter = require("nvim-treesitter")
+local Mason = require("mason")
+local MasonLspConfig = require("mason-lspconfig")
+local MiniFiles = require("mini.files")
 local Harpoon = require("harpoon")
+local Fidget = require("fidget")
 
 vim.keymap.set({ "n", "v", "x" }, "<C-S>", ":write<CR>", { desc = "Save" })
 vim.keymap.set({ "i" }, "<C-S>", ":write<CR>", { desc = "Save" })
@@ -96,14 +100,8 @@ vim.keymap.set("n", "<M-4>", function() Harpoon:list():select(4) end, { desc = "
 Catppuccin.setup({
   transparent_background = true
 })
-WhichKey.setup({
-  preset = "helix",
-})
-Mason.setup()
-TreeSitter.setup({
-  ensure_installed = { "lua", "go", "go", "gomod", "gowork", "gosum", "rust" },
-  highlight = { enable = true }
-})
+MiniIcons.setup()
+NvimWebDevIcons.setup()
 Snacks.setup({
   bigfile = { enabled = false },
   dashboard = { enabled = false },
@@ -115,13 +113,24 @@ Snacks.setup({
   quickfile = { enabled = false },
   scope = { enabled = false },
   scroll = { enabled = false },
-  statuscolumn = { enabled = false },
+  statuscolumn = { enabled = true },
   words = { enabled = false },
 })
+WhichKey.setup({
+  preset = "helix",
+})
+TreeSitter.setup({
+  highlight = { enable = true }
+})
+TreeSitter.install({ "lua", "go", "gomod", "gowork", "gosum", "rust", "java" })
+Mason.setup()
+MasonLspConfig.setup({
+  automatic_enable = true,
+  ensure_installed = { "lua_ls", "gopls", "rust_analyzer", "jdtls" }
+})
 MiniFiles.setup()
-MiniIcons.setup()
-NvimWebDevIcons.setup()
 Harpoon.setup()
+Fidget.setup()
 
 WhichKey.add({
   { "<leader>f", group = "files" },
@@ -133,11 +142,10 @@ WhichKey.add({
   { "<leader>w", proxy = "<c-w>",  group = "windows" },
 })
 
-vim.lsp.enable({ "lua_ls", "gopls", "rust-analyzer" })
 vim.lsp.inlay_hint.enable(true)
 
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "lua", "go", "rust" },
+  pattern = { "lua", "go", "rust", "java" },
   callback = function() vim.treesitter.start() end,
 })
 vim.api.nvim_create_autocmd("LspAttach", {

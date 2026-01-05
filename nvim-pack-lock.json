@@ -1,14 +1,17 @@
 {
   "plugins": {
-    "Harpoon": {
-      "rev": "87b1a3506211538f460786c23f98ec63ad9af4e5",
-      "src": "https://github.com/ThePrimeagen/Harpoon",
-      "version": "'harpoon2'"
+    "fidget.nvim": {
+      "rev": "64463022a1f2ff1318ab22a2ea4125ed9313a483",
+      "src": "https://github.com/j-hui/fidget.nvim"
     },
     "harpoon": {
-      "rev": "1bc17e3e42ea3c46b33c0bbad6a880792692a1b3",
+      "rev": "87b1a3506211538f460786c23f98ec63ad9af4e5",
       "src": "https://github.com/ThePrimeagen/harpoon",
       "version": "'harpoon2'"
+    },
+    "mason-lspconfig.nvim": {
+      "rev": "4cfe411526a7a99c18281135e8b4765ae6330d15",
+      "src": "https://github.com/mason-org/mason-lspconfig.nvim"
     },
     "mason.nvim": {
       "rev": "57e5a8addb8c71fb063ee4acda466c7cf6ad2800",
@@ -23,15 +26,15 @@
       "src": "https://github.com/nvim-mini/mini.icons"
     },
     "nvim": {
-      "rev": "ce8d176faa4643e026e597ae3c31db59b63cef09",
+      "rev": "6efc53e42cfc97700f19043105bf73ba83c4ae7d",
       "src": "https://github.com/catppuccin/nvim"
     },
     "nvim-lspconfig": {
-      "rev": "ac04ec3c2af08e9821b4eb64ede86072b9b213bf",
+      "rev": "0b38bc74487e73489624d61396af7805af9cc75f",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-treesitter": {
-      "rev": "433779916223596dce3ea64f4b77300c3aa2bfdc",
+      "rev": "99dfc5acefd7728cec4ad0d0a6a9720f2c2896ff",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "nvim-web-devicons": {
