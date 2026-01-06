@@ -34,17 +34,13 @@ vim.diagnostic.config({
 	virtual_text = true,
 })
 
-vim.wo.foldlevel = 99
-vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-vim.wo.foldmethod = "expr"
-
 local languageServers = {
 	"lua_ls",
 	"bacon_ls",
 	"gopls",
 	"jdtls",
 	"jsonls",
-  "pyright",
+	"pyright",
 	"rust_analyzer",
 	"vtsls",
 	"yamlls",
@@ -54,18 +50,29 @@ local languageTreeSitters = {
 	"c",
 	"cpp",
 	"csv",
+	"diff",
 	"fish",
 	"go",
 	"gomod",
 	"gosum",
 	"gowork",
 	"graphql",
+	"html",
 	"java",
+	"javascript",
+	"jsdoc",
 	"json",
 	"jsonc",
 	"lua",
+	"luadoc",
+	"luap",
+	"make",
 	"markdown",
+	"markdown_inline",
+	"printf",
+	"properties",
 	"python",
+	"query",
 	"regex",
 	"requirements",
 	"ron",
@@ -75,6 +82,9 @@ local languageTreeSitters = {
 	"toml",
 	"tsx",
 	"typescript",
+	"vim",
+	"vimdoc",
+	"xml",
 	"yaml",
 }
 
@@ -322,9 +332,18 @@ WhichKey.add({
 vim.lsp.inlay_hint.enable(true)
 
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = languageTreeSitters,
-	callback = function()
-		vim.treesitter.start()
+	callback = function(ev)
+		local ft, _ = ev.match, vim.treesitter.language.get_lang(ev.match)
+		for _, iLang in ipairs(TreeSitter.get_installed()) do
+			if iLang == ft then
+				vim.wo.foldlevel = 99
+				vim.wo.foldmethod = "expr"
+				vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+				vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+				vim.treesitter.start()
+				return
+			end
+		end
 	end,
 })
 vim.api.nvim_create_autocmd("FileType", {
