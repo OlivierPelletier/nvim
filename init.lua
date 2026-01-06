@@ -47,6 +47,7 @@ local languageTreeSitters = {
 	"gosum",
 	"gowork",
 	"graphql",
+  "groovy",
 	"html",
 	"java",
 	"javascript",
