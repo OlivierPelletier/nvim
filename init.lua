@@ -34,21 +34,11 @@ vim.diagnostic.config({
 	virtual_text = true,
 })
 
-local languageServers = {
-	"lua_ls",
-	"bacon_ls",
-	"gopls",
-	"jdtls",
-	"jsonls",
-	"pyright",
-	"rust_analyzer",
-	"vtsls",
-	"yamlls",
-}
 local languageTreeSitters = {
 	"bash",
 	"c",
 	"cpp",
+	"css",
 	"csv",
 	"diff",
 	"fish",
@@ -62,7 +52,6 @@ local languageTreeSitters = {
 	"javascript",
 	"jsdoc",
 	"json",
-	"jsonc",
 	"lua",
 	"luadoc",
 	"luap",
@@ -77,6 +66,7 @@ local languageTreeSitters = {
 	"requirements",
 	"ron",
 	"rust",
+	"scss",
 	"sql",
 	"tmux",
 	"toml",
@@ -84,6 +74,7 @@ local languageTreeSitters = {
 	"typescript",
 	"vim",
 	"vimdoc",
+	"vue",
 	"xml",
 	"yaml",
 }
@@ -93,9 +84,6 @@ vim.pack.add({
 	{ src = "https://github.com/nvim-mini/mini.icons" },
 	{ src = "https://github.com/nvim-tree/nvim-web-devicons" },
 	{ src = "https://github.com/folke/which-key.nvim" },
-	{ src = "https://github.com/neovim/nvim-lspconfig" },
-	{ src = "https://github.com/mason-org/mason.nvim" },
-	{ src = "https://github.com/mason-org/mason-lspconfig.nvim" },
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 	{ src = "https://github.com/nvim-lua/plenary.nvim" },
 	{ src = "https://github.com/folke/snacks.nvim" },
@@ -108,7 +96,6 @@ vim.pack.add({
 	{ src = "https://github.com/folke/noice.nvim" },
 	{ src = "https://github.com/folke/lazydev.nvim" },
 	{ src = "https://github.com/saghen/blink.cmp" },
-	{ src = "https://github.com/stevearc/conform.nvim" },
 })
 
 local Catppuccin = require("catppuccin")
@@ -117,9 +104,6 @@ local NvimWebDevIcons = require("nvim-web-devicons")
 local Snacks = require("snacks")
 local WhichKey = require("which-key")
 local TreeSitter = require("nvim-treesitter")
-local Mason = require("mason")
-local MasonRegistry = require("mason-registry")
-local MasonLspConfig = require("mason-lspconfig")
 local MiniFiles = require("mini.files")
 local Harpoon = require("harpoon")
 local GitSigns = require("gitsigns")
@@ -127,86 +111,45 @@ local LuaLine = require("lualine")
 local Noice = require("noice")
 local LazyDev = require("lazydev")
 local Blink = require("blink.cmp")
-local Conform = require("conform")
 
-vim.keymap.set({ "n", "v", "x" }, "<C-S>", ":write<CR>", { desc = "Save" })
-vim.keymap.set({ "i" }, "<C-S>", ":write<CR>", { desc = "Save" })
-vim.keymap.set("i", "<C-f>", function()
-	if Blink.is_active() then
-		return Blink.accept()
-	else
-		return vim.api.nvim_replace_termcodes("<C-f>", true, false, true)
-	end
-end, { expr = true, noremap = true })
-vim.keymap.set("n", "<leader>cf", function()
-	Conform.format()
-end, { desc = "Lsp Format code" })
-vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { desc = "Lsp Rename" })
-vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Lsp Code Action" })
-vim.keymap.set("n", "<leader>cR", Snacks.rename.rename_file, { desc = "Rename File" })
+-- stylua: ignore start
+vim.keymap.set("n", "J", "gJ", { noremap = true, silent = true })
+vim.keymap.set("n", "K", "kgJ", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v", "x" }, "<C-s>", ":write<CR>", { desc = "Save" })
+vim.keymap.set({ "n", "v", "x" }, "<C-x>", ":noh<CR>", { desc = "Remove Search Highlights" })
+vim.keymap.set({ "n", "v", "x" }, "<C-n>", ":enew<CR>", { desc = "New Buffer" })
+vim.keymap.set({ "i" }, "<C-s>", ":write<CR>", { desc = "Save" })
+vim.keymap.set({ "i" }, "<C-x>", ":noh<CR>", { desc = "Remove Search Highlights" })
+vim.keymap.set({ "i" }, "<C-n>", ":enew<CR>", { desc = "New Buffer" })
+vim.keymap.set({ "n", "t" }, "<c-/>", function() Snacks.terminal() end, { desc = "Toggle Terminal" })
 vim.keymap.set("n", "<leader>e", MiniFiles.open, { desc = "Files Explorer" })
-vim.keymap.set("n", "<leader>fm", function()
-	MiniFiles.open(vim.api.nvim_buf_get_name(0))
-end, { desc = "Files Explorer" })
-vim.keymap.set("n", "<leader>fM", function()
-	MiniFiles.open(vim.uv.cwd())
-end, { desc = "Files Explorer (cwd)" })
-vim.keymap.set("n", "<leader>/", function()
-	Snacks.picker.grep({ hidden = true })
-end, { desc = "Grep" })
-vim.keymap.set("n", "<leader><space>", function()
-	Snacks.picker.files({ hidden = true })
-end, { desc = "Find Files" })
+vim.keymap.set("n", "<leader>fm", function()	MiniFiles.open(vim.api.nvim_buf_get_name(0))end, { desc = "Files Explorer" })
+vim.keymap.set("n", "<leader>fM", function()	MiniFiles.open(vim.uv.cwd())end, { desc = "Files Explorer (cwd)" })
+vim.keymap.set("n", "<leader>/", function()	Snacks.picker.grep({ hidden = true })end, { desc = "Grep" })
+vim.keymap.set("n", "<leader><space>", function()	Snacks.picker.smart({ hidden = true })end, { desc = "Find Files" })
 vim.keymap.set("n", "<leader>,", Snacks.picker.buffers, { desc = "Buffers" })
 vim.keymap.set("n", "<leader>n", Snacks.picker.notifications, { desc = "Notifications" })
-vim.keymap.set("n", "gd", Snacks.picker.lsp_definitions, { desc = "Goto Definition" })
-vim.keymap.set("n", "gD", Snacks.picker.lsp_declarations, { desc = "Goto Declaration" })
-vim.keymap.set("n", "gr", Snacks.picker.lsp_references, { desc = "References", nowait = true })
-vim.keymap.set("n", "gI", Snacks.picker.lsp_implementations, { desc = "Goto Implementation" })
-vim.keymap.set("n", "gy", Snacks.picker.lsp_type_definitions, { desc = "Goto T[y]pe Definition" })
 vim.keymap.set("n", "<leader>sj", Snacks.picker.jumps, { desc = "Jumps" })
-vim.keymap.set("n", "<leader>gg", function()
-	Snacks.lazygit()
-end, { desc = "Lazygit" })
-vim.keymap.set("n", "<leader>bd", function()
-	Snacks.bufdelete()
-end, { desc = "Delete Buffer" })
+vim.keymap.set("n", "<leader>gg", function()	Snacks.lazygit()end, { desc = "Lazygit" })
+vim.keymap.set("n", "<leader>bd", function()	Snacks.bufdelete()end, { desc = "Delete Buffer" })
 vim.keymap.set("n", "<leader>bo", Snacks.bufdelete.other, { desc = "Delete Other Buffers" })
-vim.keymap.set("n", "<leader>gd", function()
-	Snacks.picker.git_diff()
-end, { desc = "Git Diff (Hunks)" })
-vim.keymap.set({ "n", "t" }, "<c-/>", function()
-	Snacks.terminal()
-end, { desc = "Toggle Terminal" })
-vim.keymap.set("n", "<M-q>", function()
-	Harpoon:list():add()
-end, { desc = "Harpoon Add" })
-vim.keymap.set("n", "<M-/>", function()
-	Harpoon.ui:toggle_quick_menu(Harpoon:list())
-end, { desc = "Harpoon Quick Menu" })
-vim.keymap.set("n", "<M-1>", function()
-	Harpoon:list():select(1)
-end, { desc = "Harpoon Select 1" })
-vim.keymap.set("n", "<M-2>", function()
-	Harpoon:list():select(2)
-end, { desc = "Harpoon Select 2" })
-vim.keymap.set("n", "<M-3>", function()
-	Harpoon:list():select(3)
-end, { desc = "Harpoon Select 3" })
-vim.keymap.set("n", "<M-4>", function()
-	Harpoon:list():select(4)
-end, { desc = "Harpoon Select 4" })
+vim.keymap.set("n", "<leader>gd", function()	Snacks.picker.git_diff()end, { desc = "Git Diff (Hunks)" })
+vim.keymap.set("n", "<M-q>", function()	Harpoon:list():add()end, { desc = "Harpoon Add" })
+vim.keymap.set("n", "<M-/>", function()	Harpoon.ui:toggle_quick_menu(Harpoon:list())end, { desc = "Harpoon Quick Menu" })
+vim.keymap.set("n", "<M-1>", function()	Harpoon:list():select(1)end, { desc = "Harpoon Select 1" })
+vim.keymap.set("n", "<M-2>", function()	Harpoon:list():select(2)end, { desc = "Harpoon Select 2" })
+vim.keymap.set("n", "<M-3>", function()	Harpoon:list():select(3)end, { desc = "Harpoon Select 3" })
+vim.keymap.set("n", "<M-4>", function()	Harpoon:list():select(4)end, { desc = "Harpoon Select 4" })
 vim.keymap.set("n", "<leader>ghs", GitSigns.stage_hunk, { desc = "Stage Hunk" })
 vim.keymap.set("n", "<leader>ghr", GitSigns.reset_hunk, { desc = "Reset Hunk" })
 vim.keymap.set("n", "<leader>ghS", GitSigns.stage_buffer, { desc = "Stage Buffer" })
 vim.keymap.set("n", "<leader>ghR", GitSigns.reset_buffer, { desc = "Reset Buffer" })
 vim.keymap.set("n", "<leader>ghp", GitSigns.preview_hunk, { desc = "Preview Hunk" })
 vim.keymap.set("n", "<leader>ghi", GitSigns.preview_hunk_inline, { desc = "Preview Hunk Inline" })
-vim.keymap.set("n", "<leader>ghb", function()
-	GitSigns.blame_line({ full = true })
-end, { desc = "Show Blame" })
+vim.keymap.set("n", "<leader>ghb", function()	GitSigns.blame_line({ full = true })end, { desc = "Show Blame" })
 vim.keymap.set("n", "<leader>ghd", GitSigns.diffthis, { desc = "Diff This" })
 vim.keymap.set({ "o", "x" }, "ih", GitSigns.select_hunk, { desc = "Inner Hunk" })
+-- stylua: ignore end
 
 Catppuccin.setup({
 	transparent_background = true,
@@ -225,20 +168,12 @@ Snacks.setup({
 	notifier = { enabled = true },
 	scope = { enabled = true },
 	statuscolumn = { enabled = true },
+	words = { enabled = true },
 })
 WhichKey.setup({
 	preset = "helix",
 })
 TreeSitter.install(languageTreeSitters)
-Mason.setup()
-MasonLspConfig.setup({
-	automatic_enable = {
-		exclude = {
-			"jdtls",
-		},
-	},
-	ensure_installed = languageServers,
-})
 MiniFiles.setup({
 	windows = {
 		preview = true,
@@ -279,6 +214,7 @@ Blink.setup({
 	keymap = {
 		preset = "none",
 		["<CR>"] = { "accept", "fallback" },
+		["<C-f>"] = { "accept", "fallback" },
 		["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
 		["<C-x>"] = { "hide", "fallback" },
 		["<Up>"] = { "select_prev", "fallback" },
@@ -287,35 +223,6 @@ Blink.setup({
 		["<C-d>"] = { "scroll_documentation_down", "fallback" },
 	},
 })
-Conform.setup({
-	formatters_by_ft = {
-		go = { "goimports", "gofumpt" },
-		java = { "google-java-format" },
-		javascript = { "prettierd" },
-		lua = { "stylua" },
-		python = { "isort", "black" },
-		rust = { lsp_format = "fallback" },
-	},
-})
-
-local masonEnsureInstalled = {
-	"black",
-	"gofumpt",
-	"goimports",
-	"google-java-format",
-	"isort",
-	"prettierd",
-	"stylua",
-}
-
-MasonRegistry.refresh(function()
-	for _, tool in ipairs(masonEnsureInstalled) do
-		local p = MasonRegistry.get_package(tool)
-		if not p:is_installed() then
-			p:install()
-		end
-	end
-end)
 
 WhichKey.add({
 	{ "<leader>f", group = "files" },
@@ -329,8 +236,6 @@ WhichKey.add({
 	{ "<leader>t", group = "test" },
 })
 
-vim.lsp.inlay_hint.enable(true)
-
 vim.api.nvim_create_autocmd("FileType", {
 	callback = function(ev)
 		local ft, _ = ev.match, vim.treesitter.language.get_lang(ev.match)
@@ -339,7 +244,7 @@ vim.api.nvim_create_autocmd("FileType", {
 				vim.wo.foldlevel = 99
 				vim.wo.foldmethod = "expr"
 				vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-				vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+				vim.bo.indentexpr = 'v:lua.require"nvim-treesitter".indentexpr()'
 				vim.treesitter.start()
 				return
 			end
@@ -398,6 +303,4 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 vim.cmd("colorscheme catppuccin-mocha")
 
 require("debugger")
-require("lang.java")
-require("lang.go")
-require("lang.rust")
+require("lsp")
