@@ -38,9 +38,20 @@ vim.wo.foldlevel = 99
 vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.wo.foldmethod = "expr"
 
-local treeSitterLanguages = {
+local languageServers = {
+	"lua_ls",
+	"bacon_ls",
+	"gopls",
+	"jdtls",
+	"jsonls",
+  "pyright",
+	"rust_analyzer",
+	"vtsls",
+	"yamlls",
+}
+local languageTreeSitters = {
 	"bash",
-  "c",
+	"c",
 	"cpp",
 	"csv",
 	"fish",
@@ -53,18 +64,18 @@ local treeSitterLanguages = {
 	"json",
 	"jsonc",
 	"lua",
-  "markdown",
-  "python",
+	"markdown",
+	"python",
 	"regex",
 	"requirements",
 	"ron",
 	"rust",
-  "sql",
+	"sql",
 	"tmux",
 	"toml",
 	"tsx",
 	"typescript",
-  "yaml"
+	"yaml",
 }
 
 vim.pack.add({
@@ -208,7 +219,7 @@ Snacks.setup({
 WhichKey.setup({
 	preset = "helix",
 })
-TreeSitter.install(treeSitterLanguages)
+TreeSitter.install(languageTreeSitters)
 Mason.setup()
 MasonLspConfig.setup({
 	automatic_enable = {
@@ -216,7 +227,7 @@ MasonLspConfig.setup({
 			"jdtls",
 		},
 	},
-	ensure_installed = { "lua_ls", "gopls", "rust_analyzer", "bacon_ls", "jdtls", "yamlls", "jsonls", "vtsls" },
+	ensure_installed = languageServers,
 })
 MiniFiles.setup({
 	windows = {
@@ -268,15 +279,24 @@ Blink.setup({
 })
 Conform.setup({
 	formatters_by_ft = {
-		lua = { "stylua" },
-		rust = { lsp_format = "fallback" },
-		javascript = { "prettierd" },
-		java = { "google-java-format" },
 		go = { "goimports", "gofumpt" },
+		java = { "google-java-format" },
+		javascript = { "prettierd" },
+		lua = { "stylua" },
+		python = { "isort", "black" },
+		rust = { lsp_format = "fallback" },
 	},
 })
 
-local masonEnsureInstalled = { "stylua", "goimports", "gofumpt", "prettierd", "google-java-format" }
+local masonEnsureInstalled = {
+	"black",
+	"gofumpt",
+	"goimports",
+	"google-java-format",
+	"isort",
+	"prettierd",
+	"stylua",
+}
 
 MasonRegistry.refresh(function()
 	for _, tool in ipairs(masonEnsureInstalled) do
@@ -302,7 +322,7 @@ WhichKey.add({
 vim.lsp.inlay_hint.enable(true)
 
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = treeSitterLanguages,
+	pattern = languageTreeSitters,
 	callback = function()
 		vim.treesitter.start()
 	end,
