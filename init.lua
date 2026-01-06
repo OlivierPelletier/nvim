@@ -186,7 +186,17 @@ Noice.setup({
   },
 })
 Blink.setup({
-  fuzzy = { implementation = "lua" }
+  fuzzy = { implementation = "lua" },
+  keymap = {
+    preset = "none",
+    ["<CR>"] = { "accept", "fallback" },
+    ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+    ["<C-x>"] = { "hide", "fallback" },
+    ["<Up>"] = { "select_prev", "fallback" },
+    ["<Down>"] = { "select_next", "fallback" },
+    ["<C-u>"] = { "scroll_documentation_up", "fallback" },
+    ["<C-d>"] = { "scroll_documentation_down", "fallback" },
+  }
 })
 
 WhichKey.add({
@@ -254,3 +264,4 @@ vim.cmd("colorscheme catppuccin-mocha")
 
 require("debugger")
 require("lang.java")
+require("lang.go")
