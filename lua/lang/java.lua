@@ -2,6 +2,11 @@ vim.pack.add({
   { src = "https://github.com/mfussenegger/nvim-jdtls" }
 })
 
+local Dap = require("dap")
+local Jdtls = require("jdtls")
+local JdtlsDap = require("jdtls.dap")
+local MasonRegistry = require("mason-registry")
+
 local extend_or_override = function(base, extra)
   if not extra then
     return base
@@ -9,17 +14,16 @@ local extend_or_override = function(base, extra)
   return vim.tbl_deep_extend("force", base, extra)
 end
 
-local ensure_installed = { "java-debug-adapter", "java-test" }
+local javaDebugAdapter = MasonRegistry.get_package("java-debug-adapter")
+if not javaDebugAdapter:is_installed() then
+  javaDebugAdapter:install()
+end
 
-local mr = require("mason-registry")
-mr.refresh(function()
-  for _, tool in ipairs(ensure_installed) do
-    local p = mr.get_package(tool)
-    if not p:is_installed() then
-      p:install()
-    end
-  end
-end)
+local javaTest = MasonRegistry.get_package("java-test")
+if not javaTest:is_installed() then
+  javaTest:install()
+end
+
 
 local cmd = { vim.fn.exepath("jdtls") }
 local lombok_jar = vim.fn.expand("$MASON/share/jdtls/lombok.jar")
@@ -30,12 +34,10 @@ local opts = {
     return vim.fs.root(path, vim.lsp.config.jdtls.root_markers)
   end,
 
-  -- How to find the project name for a given root dir.
   project_name = function(root_dir)
     return root_dir and vim.fs.basename(root_dir)
   end,
 
-  -- Where are the config and workspace dirs for a project?
   jdtls_config_dir = function(project_name)
     return vim.fn.stdpath("cache") .. "/jdtls/" .. project_name .. "/config"
   end,
@@ -43,8 +45,6 @@ local opts = {
     return vim.fn.stdpath("cache") .. "/jdtls/" .. project_name .. "/workspace"
   end,
 
-  -- How to run jdtls. This can be overridden to a full java command-line
-  -- if the Python wrapper script doesn't suffice.
   cmd = cmd,
   full_cmd = function(opts)
     local fname = vim.api.nvim_buf_get_name(0)
@@ -62,9 +62,7 @@ local opts = {
     return cmd
   end,
 
-  -- These depend on nvim-dap, but can additionally be disabled by setting false here.
   dap = { hotcodereplace = "auto", config_overrides = {} },
-  -- Can set this to false to disable main class scan, which is a performance killer for large project
   dap_main = {},
   test = true,
   settings = {
@@ -78,21 +76,12 @@ local opts = {
   },
 }
 
--- Find the extra bundles that should be passed on the jdtls command-line
--- if nvim-dap is enabled with java debug/test.
-local bundles = {} ---@type string[]
-local mason_registry = require("mason-registry")
-if opts.dap and mason_registry.is_installed("java-debug-adapter") then
-  bundles = vim.fn.glob("$MASON/share/java-debug-adapter/com.microsoft.java.debug.plugin-*jar", false, true)
-  -- java-test also depends on java-debug-adapter.
-  if opts.test and mason_registry.is_installed("java-test") then
-    vim.list_extend(bundles, vim.fn.glob("$MASON/share/java-test/*.jar", false, true))
-  end
-end
+local bundles = vim.fn.glob("$MASON/share/java-debug-adapter/com.microsoft.java.debug.plugin-*jar", false, true)
+vim.list_extend(bundles, vim.fn.glob("$MASON/share/java-test/*.jar", false, true))
+
 local function attach_jdtls()
   local fname = vim.api.nvim_buf_get_name(0)
 
-  -- Configuration can be augmented and overridden by opts.jdtls
   local config = extend_or_override({
     cmd = opts.full_cmd(opts),
     root_dir = opts.root_dir(fname),
@@ -100,52 +89,34 @@ local function attach_jdtls()
       bundles = bundles,
     },
     settings = opts.settings,
-    -- enable CMP capabilities
     capabilities = nil,
   }, opts.jdtls)
 
-  -- Existing server will be reused if the root_dir matches.
-  require("jdtls").start_or_attach(config)
-  -- not need to require("jdtls.setup").add_commands(), start automatically adds commands
+  Jdtls.start_or_attach(config)
 end
 
--- Attach the jdtls for each java buffer. HOWEVER, this plugin loads
--- depending on filetype, so this autocmd doesn't run for the first file.
--- For that, we call directly below.
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "java" },
   callback = attach_jdtls,
 })
 
--- Setup keymap and dap after the lsp is fully attached.
--- https://github.com/mfussenegger/nvim-jdtls#nvim-dap-configuration
--- https://neovim.io/doc/user/lsp.html#LspAttach
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     if client and client.name == "jdtls" then
-      vim.keymap.set("n", "<leader>co", function() require("jdtls").organize_imports(vim.api.nvim_buf_get_name(0)) end,
+      vim.keymap.set("n", "<leader>co", function() Jdtls.organize_imports() end,
         { desc = "Organize Imports" })
 
-      local mason_registry = require("mason-registry")
-      if opts.dap and mason_registry.is_installed("java-debug-adapter") then
-        -- custom init for Java debugger
-        require("jdtls").setup_dap(opts.dap)
-        if opts.dap_main then
-          require("jdtls.dap").setup_dap_main_class_configs(opts.dap_main)
-        end
-
-        -- Java Test require Java debugger to work
-        if opts.test and mason_registry.is_installed("java-test") then
-          -- custom keymaps for Java test runner (not yet compatible with neotest)
-          vim.keymap.set("n", "<leader>tt", function() require("jdtls.dap").test_class() end, { desc = "Run All Test" })
-          vim.keymap.set("n", "<leader>tr", function() require("jdtls.dap").test_nearest_method() end,
-            { desc = "Run Nearest Test" })
-          vim.keymap.set("n", "<leader>tT", function() require("jdtls.dap").pick_test() end, { desc = "Run Test" })
-        end
+      Jdtls.setup_dap(opts.dap)
+      if opts.dap_main then
+        JdtlsDap.setup_dap_main_class_configs(opts.dap_main)
       end
 
-      -- User can set additional keymaps in opts.on_attach
+      vim.keymap.set("n", "<leader>tt", function() JdtlsDap.test_class() end, { desc = "Run All Test" })
+      vim.keymap.set("n", "<leader>tr", function() JdtlsDap.test_nearest_method() end,
+        { desc = "Run Nearest Test" })
+      vim.keymap.set("n", "<leader>tT", function() JdtlsDap.pick_test() end, { desc = "Run Test" })
+
       if opts.on_attach then
         opts.on_attach(args)
       end
@@ -153,8 +124,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
-local dap = require("dap")
-dap.configurations.java = {
+Dap.configurations.java = {
   {
     type = "java",
     request = "attach",
@@ -163,6 +133,3 @@ dap.configurations.java = {
     port = 5005,
   },
 }
-
--- Avoid race condition by calling attach the first time, since the autocmd won't fire.
--- attach_jdtls()
