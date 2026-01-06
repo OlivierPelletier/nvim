@@ -23,9 +23,9 @@ vim.o.termguicolors = true
 vim.o.confirm = true
 vim.o.showtabline = 0
 vim.o.statusline = " "
+vim.o.laststatus = 3
 
 vim.o.clipboard = "unnamedplus"
-vim.o.completeopt = "menu,menuone,noselect"
 
 vim.g.mapleader = " "
 
@@ -52,6 +52,7 @@ vim.pack.add({
   { src = "https://github.com/MunifTanjim/nui.nvim" },
   { src = "https://github.com/folke/noice.nvim" },
   { src = "https://github.com/folke/lazydev.nvim" },
+  { src = "https://github.com/saghen/blink.cmp" }
 })
 
 local Catppuccin = require("catppuccin")
@@ -68,14 +69,13 @@ local GitSigns = require("gitsigns")
 local LuaLine = require("lualine")
 local Noice = require("noice")
 local LazyDev = require("lazydev")
+local Blink = require("blink.cmp")
 
 vim.keymap.set({ "n", "v", "x" }, "<C-S>", ":write<CR>", { desc = "Save" })
 vim.keymap.set({ "i" }, "<C-S>", ":write<CR>", { desc = "Save" })
-vim.keymap.set("i", "<C-space>", "<C-x><C-o>", { noremap = true })
-vim.keymap.set("i", ".", function() return ".<C-x><C-o>" end, { expr = true, noremap = true })
 vim.keymap.set("i", "<C-f>", function()
-  if vim.fn.pumvisible() == 1 then
-    return vim.api.nvim_replace_termcodes("<C-n><C-y>", true, false, true)
+  if Blink.is_active() then
+    return Blink.accept()
   else
     return vim.api.nvim_replace_termcodes("<C-f>", true, false, true)
   end
@@ -88,8 +88,8 @@ vim.keymap.set("n", "<leader>e", MiniFiles.open, { desc = "Files Explorer" })
 vim.keymap.set("n", "<leader>fm", function() MiniFiles.open(vim.api.nvim_buf_get_name(0)) end,
   { desc = "Files Explorer" })
 vim.keymap.set("n", "<leader>fM", function() MiniFiles.open(vim.uv.cwd()) end, { desc = "Files Explorer (cwd)" })
-vim.keymap.set("n", "<leader>/", Snacks.picker.grep, { desc = "Grep" })
-vim.keymap.set("n", "<leader><space>", Snacks.picker.files, { desc = "Find Files" })
+vim.keymap.set("n", "<leader>/", function() Snacks.picker.grep({ hidden = true }) end, { desc = "Grep" })
+vim.keymap.set("n", "<leader><space>", function() Snacks.picker.files({ hidden = true }) end, { desc = "Find Files" })
 vim.keymap.set("n", "<leader>,", Snacks.picker.buffers, { desc = "Buffers" })
 vim.keymap.set("n", "<leader>n", Snacks.picker.notifications, { desc = "Notifications" })
 vim.keymap.set("n", "gd", Snacks.picker.lsp_definitions, { desc = "Goto Definition" })
@@ -120,23 +120,22 @@ vim.keymap.set('n', '<leader>ghd', GitSigns.diffthis, { desc = "Diff This" })
 vim.keymap.set({ 'o', 'x' }, 'ih', GitSigns.select_hunk, { desc = "Inner Hunk" })
 
 Catppuccin.setup({
-  transparent_background = false
+  transparent_background = true,
+  float = {
+    transparent = true,
+    solid = false
+  }
 })
 MiniIcons.setup()
 NvimWebDevIcons.setup()
 Snacks.setup({
   bigfile = { enabled = true },
-  dashboard = { enabled = false },
-  explorer = { enabled = false },
   indent = { enabled = true },
   input = { enabled = true },
   picker = { enabled = true },
   notifier = { enabled = true },
-  quickfile = { enabled = false },
   scope = { enabled = true },
-  scroll = { enabled = false },
   statuscolumn = { enabled = true },
-  words = { enabled = false },
 })
 WhichKey.setup({
   preset = "helix",
@@ -163,7 +162,11 @@ MiniFiles.setup({
 })
 Harpoon.setup()
 GitSigns.setup()
-LuaLine.setup()
+LuaLine.setup({
+  options = {
+    globalstatus = true,
+  }
+})
 Noice.setup({
   lsp = {
     override = {
@@ -178,14 +181,12 @@ Noice.setup({
     inc_rename = true,
     lsp_doc_border = true,
   },
-  views = {
-    popupmenu = {
-      relative = "cursor",
-      border = {
-        style = "rounded",
-      },
-    },
+  popupmenu = {
+    enabled = false,
   },
+})
+Blink.setup({
+  fuzzy = { implementation = "lua" }
 })
 
 WhichKey.add({
@@ -214,11 +215,6 @@ vim.api.nvim_create_autocmd("FileType", {
         { path = "${3rd}/luv/library", words = { "vim%.uv" } },
       }
     })
-  end,
-})
-vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(args)
-    vim.bo[args.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
   end,
 })
 vim.api.nvim_create_autocmd("UIEnter", {
