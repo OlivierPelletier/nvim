@@ -34,6 +34,39 @@ vim.diagnostic.config({
 	virtual_text = true,
 })
 
+vim.wo.foldlevel = 99
+vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.wo.foldmethod = "expr"
+
+local treeSitterLanguages = {
+	"bash",
+  "c",
+	"cpp",
+	"csv",
+	"fish",
+	"go",
+	"gomod",
+	"gosum",
+	"gowork",
+	"graphql",
+	"java",
+	"json",
+	"jsonc",
+	"lua",
+  "markdown",
+  "python",
+	"regex",
+	"requirements",
+	"ron",
+	"rust",
+  "sql",
+	"tmux",
+	"toml",
+	"tsx",
+	"typescript",
+  "yaml"
+}
+
 vim.pack.add({
 	{ src = "https://github.com/catppuccin/nvim" },
 	{ src = "https://github.com/nvim-mini/mini.icons" },
@@ -175,22 +208,7 @@ Snacks.setup({
 WhichKey.setup({
 	preset = "helix",
 })
-TreeSitter.install({
-	"lua",
-	"go",
-	"gomod",
-	"gowork",
-	"gosum",
-	"rust",
-	"ron",
-	"java",
-	"regex",
-	"bash",
-	"sh",
-	"fish",
-	"json5",
-	"cpp",
-})
+TreeSitter.install(treeSitterLanguages)
 Mason.setup()
 MasonLspConfig.setup({
 	automatic_enable = {
@@ -284,7 +302,7 @@ WhichKey.add({
 vim.lsp.inlay_hint.enable(true)
 
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "lua", "go", "rust", "java" },
+	pattern = treeSitterLanguages,
 	callback = function()
 		vim.treesitter.start()
 	end,
