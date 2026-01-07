@@ -1,3 +1,5 @@
+vim.api.nvim_exec2([[language en_CA.UTF-8]], { output = false })
+
 vim.o.number = true
 vim.o.relativenumber = false
 vim.o.signcolumn = "yes"
@@ -48,6 +50,7 @@ local languageTreeSitters = {
 	"gowork",
 	"graphql",
 	"groovy",
+	"hcl",
 	"html",
 	"java",
 	"javascript",
@@ -69,6 +72,7 @@ local languageTreeSitters = {
 	"rust",
 	"scss",
 	"sql",
+	"terraform",
 	"tmux",
 	"toml",
 	"tsx",
@@ -96,7 +100,6 @@ vim.pack.add({
 	{ src = "https://github.com/MunifTanjim/nui.nvim" },
 	{ src = "https://github.com/folke/noice.nvim" },
 	{ src = "https://github.com/folke/lazydev.nvim" },
-	{ src = "https://github.com/saghen/blink.cmp" },
 })
 
 local Catppuccin = require("catppuccin")
@@ -111,7 +114,6 @@ local GitSigns = require("gitsigns")
 local LuaLine = require("lualine")
 local Noice = require("noice")
 local LazyDev = require("lazydev")
-local Blink = require("blink.cmp")
 
 -- stylua: ignore start
 vim.keymap.set("n", "J", "gJ", { noremap = true, silent = true })
@@ -210,44 +212,6 @@ Noice.setup({
 		enabled = false,
 	},
 })
-Blink.setup({
-	fuzzy = { implementation = "lua" },
-	completion = {
-		menu = {
-			auto_show = false,
-		},
-		ghost_text = {
-			enabled = true,
-		},
-    accept = {
-      auto_brackets = {
-        enabled = false
-      }
-    }
-	},
-  -- stylua: ignore start
-	keymap = {
-		preset = "none",
-		["<C-f>"] = { "accept", "fallback" },
-		["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
-		["<CR>"] = { function(cmp) if Blink.accept() then return cmp.hide() end end,	"fallback" },
-		["<C-x>"] = { function(cmp) if Blink.is_menu_visible() then return cmp.hide() end end,	"fallback" },
-		["<Tab>"] = { function(cmp) if Blink.is_menu_visible() then return cmp.select_next()	end	end,"fallback" },
-		["<S-Tab>"] = { function(cmp) if Blink.is_menu_visible() then return cmp.select_prev()	end	end,"fallback" },
-		["<Up>"] = { "select_prev", "fallback" },
-		["<Down>"] = { "select_next", "fallback" },
-		["<C-u>"] = { "scroll_documentation_up", "fallback" },
-		["<C-d>"] = { "scroll_documentation_down", "fallback" },
-	},
-  -- stylua: ignore end
-	cmdline = {
-		keymap = {
-			preset = "none",
-			["<C-f>"] = { "accept" },
-		},
-	},
-})
-
 WhichKey.add({
 	{ "<leader>f", group = "files" },
 	{ "<leader>b", group = "buffers" },

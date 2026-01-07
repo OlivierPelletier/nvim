@@ -3,15 +3,19 @@ vim.pack.add({
 	{ src = "https://github.com/mason-org/mason.nvim" },
 	{ src = "https://github.com/mason-org/mason-lspconfig.nvim" },
 	{ src = "https://github.com/stevearc/conform.nvim" },
+	{ src = "https://github.com/fang2hou/blink-copilot" },
+	{ src = "https://github.com/saghen/blink.cmp" },
 })
 
 local languageServers = {
+	"copilot",
 	"lua_ls",
 	"gopls",
 	"jdtls",
 	"jsonls",
 	"pyright",
 	"rust_analyzer",
+	"terraformls",
 	"vtsls",
 	"vue_ls",
 	"yamlls",
@@ -30,6 +34,7 @@ local Mason = require("mason")
 local MasonLspConfig = require("mason-lspconfig")
 local MasonRegistry = require("mason-registry")
 local Conform = require("conform")
+local Blink = require("blink.cmp")
 
 Mason.setup()
 MasonLspConfig.setup({
@@ -40,7 +45,6 @@ MasonLspConfig.setup({
 	},
 	ensure_installed = languageServers,
 })
-
 MasonRegistry.refresh(function()
 	for _, tool in ipairs(additionnalTools) do
 		local p = MasonRegistry.get_package(tool)
@@ -49,7 +53,6 @@ MasonRegistry.refresh(function()
 		end
 	end
 end)
-
 Conform.setup({
 	formatters_by_ft = {
 		go = { "goimports", "gofumpt" },
@@ -59,6 +62,75 @@ Conform.setup({
 		python = { "isort", "black" },
 		rust = { lsp_format = "fallback" },
 	},
+	default_format_opts = {
+		lsp_format = "fallback",
+	},
+})
+Blink.setup({
+	fuzzy = { implementation = "lua" },
+	sources = {
+		default = { "lsp", "path", "snippets", "buffer" },
+		providers = {
+			copilot = {
+				name = "copilot",
+				module = "blink-copilot",
+				async = true,
+			},
+		},
+	},
+	completion = {
+		trigger = {
+			prefetch_on_insert = true,
+		},
+		menu = {
+			auto_show = false,
+		},
+		ghost_text = {
+			enabled = true,
+		},
+		accept = {
+			auto_brackets = {
+				enabled = false,
+			},
+		},
+		list = {
+			cycle = {
+				from_bottom = true,
+				from_top = true,
+			},
+		},
+	},
+  -- stylua: ignore start
+	keymap = {
+		preset = "none",
+		["<C-f>"] = { "accept", "fallback" },
+		["<C-g>"] = { function(cmp) if cmp.get_items()[1] ~= nil and cmp.get_items()[1].source_id == "copilot" then if cmp.select_next({auto_insert = false, on_ghost_text = true}) then return true end end return cmp.show({ providers = { "copilot" }}) end },
+		["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+		["<CR>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.accept() end end,	"fallback" },
+		["<C-x>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.hide() end end,	"fallback" },
+		["<Tab>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.select_next()	end	end,"fallback" },
+		["<S-Tab>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.select_prev()	end	end,"fallback" },
+		["<Up>"] = { "select_prev", "fallback" },
+		["<Down>"] = { "select_next", "fallback" },
+		["<C-u>"] = { "scroll_documentation_up", "fallback" },
+		["<C-d>"] = { "scroll_documentation_down", "fallback" },
+	},
+	cmdline = {
+		keymap = {
+			preset = "none",
+			["<C-f>"] = { "accept", "fallback" },
+			["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+      ["<CR>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.accept() end end,	"fallback" },
+      ["<C-x>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.hide() end end,	"fallback" },
+      ["<Tab>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.select_next()	end	end,"fallback" },
+      ["<S-Tab>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.select_prev()	end	end,"fallback" },
+      ["<Up>"] = { "select_prev", "fallback" },
+      ["<Down>"] = { "select_next", "fallback" },
+      ["<C-u>"] = { "scroll_documentation_up", "fallback" },
+      ["<C-d>"] = { "scroll_documentation_down", "fallback" },
+		},
+	},
+	-- stylua: ignore end
 })
 
 -- stylua: ignore start
@@ -85,29 +157,6 @@ vim.keymap.set({ "n", "v" }, "<leader>cf", function()	Conform.format()end, { des
 vim.keymap.set("n",  "<leader>ss", Snacks.picker.lsp_symbols, { desc = "Symbols"})
 vim.keymap.set("n",  "<leader>sS", Snacks.picker.lsp_workspace_symbols, { desc = "Workspace Symbols"})
 -- stylua: ignore end
-
-Snacks.util.lsp.on({ method = "textDocument/inlayHint" }, function(buffer)
-	if
-		vim.api.nvim_buf_is_valid(buffer)
-		and vim.bo[buffer].buftype == ""
-		and not vim.tbl_contains({ "vue" }, vim.bo[buffer].filetype)
-	then
-		vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
-	end
-end)
-
-Snacks.util.lsp.on({ method = "textDocument/foldingRange" }, function()
-	vim.wo.foldmethod = "expr"
-	vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
-end)
-
-Snacks.util.lsp.on({ method = "textDocument/codeLens" }, function(buffer)
-	vim.lsp.codelens.refresh()
-	vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-		buffer = buffer,
-		callback = vim.lsp.codelens.refresh,
-	})
-end)
 
 local diagnosticIcons = {
 	Error = " ",
@@ -142,7 +191,6 @@ vim.diagnostic.config({
 		},
 	},
 })
-
 vim.lsp.config("*", {
 	capabilities = {
 		workspace = {
@@ -179,6 +227,58 @@ vim.lsp.config("lua_ls", {
 			},
 		},
 	},
+})
+
+-- inlayHint, folds and codeLens
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    local buffer = args.buf
+
+		if client == nil then
+			return
+		end
+
+    if client:supports_method("textDocument/inlayHint") then
+      if vim.api.nvim_buf_is_valid(buffer) and vim.bo[buffer].buftype == "" and not vim.tbl_contains({ "vue" }, vim.bo[buffer].filetype) then
+        vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
+      end
+    end
+
+    if client:supports_method("textDocument/foldingRange") then
+      vim.wo.foldmethod = "expr"
+      vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
+    end
+
+    if client:supports_method("textDocument/codeLens") then
+      vim.lsp.codelens.refresh({ bufnr = buffer })
+      vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+        buffer = buffer,
+        callback = function()
+          vim.lsp.codelens.refresh({ bufnr = buffer })
+        end,
+      })
+    end
+  end,
+})
+-- Trigger copilot on insert
+vim.api.nvim_create_autocmd("InsertEnter", {
+	callback = function()
+		local clients = vim.lsp.get_clients({ name = "copilot" })
+		if #clients == 0 then
+			return
+		end
+
+		local client = clients[1]
+		local bufnr = vim.api.nvim_get_current_buf()
+		local params = vim.lsp.util.make_position_params(0, client.offset_encoding or "utf-16")
+
+		client:request("textDocument/inlineCompletion", params, function(err, _)
+			if err then
+				return
+			end
+		end, bufnr)
+	end,
 })
 
 require("lang.java")
