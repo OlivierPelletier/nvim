@@ -1,58 +1,34 @@
 vim.pack.add({
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
 	{ src = "https://github.com/mason-org/mason.nvim" },
-	{ src = "https://github.com/mason-org/mason-lspconfig.nvim" },
 	{ src = "https://github.com/stevearc/conform.nvim" },
-	{ src = "https://github.com/fang2hou/blink-copilot" },
 	{ src = "https://github.com/saghen/blink.cmp" },
 })
 
 local languageServers = {
-	"copilot",
-	"lua_ls",
-	"gopls",
-	"jdtls",
-	"jsonls",
+	"json-lsp",
+	"lua-language-server",
 	"pyright",
-	"rust_analyzer",
-	"terraformls",
-	"vtsls",
-	"vue_ls",
-	"yamlls",
+	"terraform-ls",
+	"yaml-language-server",
 }
 
-local additionnalTools = {
+local formattersAndTools = {
 	"black",
 	"gofumpt",
 	"goimports",
 	"google-java-format",
 	"isort",
 	"prettierd",
+	"stylua",
 }
 
 local Mason = require("mason")
-local MasonLspConfig = require("mason-lspconfig")
 local MasonRegistry = require("mason-registry")
 local Conform = require("conform")
 local Blink = require("blink.cmp")
 
 Mason.setup()
-MasonLspConfig.setup({
-	automatic_enable = {
-		exclude = {
-			"jdtls",
-		},
-	},
-	ensure_installed = languageServers,
-})
-MasonRegistry.refresh(function()
-	for _, tool in ipairs(additionnalTools) do
-		local p = MasonRegistry.get_package(tool)
-		if not p:is_installed() then
-			p:install()
-		end
-	end
-end)
 Conform.setup({
 	formatters_by_ft = {
 		go = { "goimports", "gofumpt" },
@@ -158,6 +134,105 @@ vim.keymap.set("n",  "<leader>ss", Snacks.picker.lsp_symbols, { desc = "Symbols"
 vim.keymap.set("n",  "<leader>sS", Snacks.picker.lsp_workspace_symbols, { desc = "Workspace Symbols"})
 -- stylua: ignore end
 
+MasonRegistry.refresh(function()
+	for _, tool in ipairs(languageServers) do
+		local p = MasonRegistry.get_package(tool)
+		if not p:is_installed() then
+			p:install()
+		end
+	end
+end)
+
+MasonRegistry.refresh(function()
+	for _, tool in ipairs(formattersAndTools) do
+		local p = MasonRegistry.get_package(tool)
+		if not p:is_installed() then
+			p:install()
+		end
+	end
+end)
+
+vim.lsp.enable({
+	"json-ls",
+	"lua_ls",
+	"pyright",
+	"terraformls",
+	"yamlls",
+})
+vim.lsp.config("*", {
+	capabilities = {
+		workspace = {
+			fileOperations = {
+				didRename = true,
+				willRename = true,
+			},
+		},
+	},
+})
+vim.lsp.config("lua_ls", {
+	settings = {
+		Lua = {
+			workspace = {
+				checkThirdParty = false,
+			},
+			codeLens = {
+				enable = false,
+			},
+			completion = {
+				callSnippet = "Replace",
+			},
+			doc = {
+				privateName = { "^_" },
+			},
+			hint = {
+				enable = true,
+				setType = false,
+				paramType = true,
+				paramName = "Disable",
+				semicolon = "Disable",
+				arrayIndex = "Disable",
+			},
+		},
+	},
+})
+
+-- inlayHint, folds and codeLens
+vim.api.nvim_create_autocmd("LspAttach", {
+	callback = function(args)
+		local client = vim.lsp.get_client_by_id(args.data.client_id)
+		local buffer = args.buf
+
+		if client == nil then
+			return
+		end
+
+		if client:supports_method("textDocument/inlayHint") then
+			if
+				vim.api.nvim_buf_is_valid(buffer)
+				and vim.bo[buffer].buftype == ""
+				and not vim.tbl_contains({ "vue" }, vim.bo[buffer].filetype)
+			then
+				vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
+			end
+		end
+
+		if client:supports_method("textDocument/foldingRange") then
+			vim.wo.foldmethod = "expr"
+			vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
+		end
+
+		if client:supports_method("textDocument/codeLens") then
+			vim.lsp.codelens.refresh({ bufnr = buffer })
+			vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+				buffer = buffer,
+				callback = function()
+					vim.lsp.codelens.refresh({ bufnr = buffer })
+				end,
+			})
+		end
+	end,
+})
+
 local diagnosticIcons = {
 	Error = " ",
 	Warn = " ",
@@ -190,95 +265,6 @@ vim.diagnostic.config({
 			[vim.diagnostic.severity.INFO] = diagnosticIcons.Info,
 		},
 	},
-})
-vim.lsp.config("*", {
-	capabilities = {
-		workspace = {
-			fileOperations = {
-				didRename = true,
-				willRename = true,
-			},
-		},
-	},
-})
-vim.lsp.enable("stylua", false)
-vim.lsp.config("lua_ls", {
-	settings = {
-		Lua = {
-			workspace = {
-				checkThirdParty = false,
-			},
-			codeLens = {
-				enable = false,
-			},
-			completion = {
-				callSnippet = "Replace",
-			},
-			doc = {
-				privateName = { "^_" },
-			},
-			hint = {
-				enable = true,
-				setType = false,
-				paramType = true,
-				paramName = "Disable",
-				semicolon = "Disable",
-				arrayIndex = "Disable",
-			},
-		},
-	},
-})
-
--- inlayHint, folds and codeLens
-vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(args)
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
-    local buffer = args.buf
-
-		if client == nil then
-			return
-		end
-
-    if client:supports_method("textDocument/inlayHint") then
-      if vim.api.nvim_buf_is_valid(buffer) and vim.bo[buffer].buftype == "" and not vim.tbl_contains({ "vue" }, vim.bo[buffer].filetype) then
-        vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
-      end
-    end
-
-    if client:supports_method("textDocument/foldingRange") then
-      vim.wo.foldmethod = "expr"
-      vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
-    end
-
-    if client:supports_method("textDocument/codeLens") then
-      vim.lsp.codelens.refresh({ bufnr = buffer })
-      vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-        buffer = buffer,
-        callback = function()
-          vim.lsp.codelens.refresh({ bufnr = buffer })
-        end,
-      })
-    end
-  end,
-})
--- Trigger copilot on insert
-vim.api.nvim_create_autocmd("InsertEnter", {
-	callback = function()
-		local clients = vim.lsp.get_clients({ name = "copilot" })
-		if #clients == 0 then
-			return
-		end
-
-		local client = clients[1]
-		local bufnr = vim.api.nvim_get_current_buf()
-		local params = vim.lsp.util.make_position_params(0, client.offset_encoding or "utf-16")
-
-		client:request("textDocument/inlineCompletion", params, function(err, _)
-			if err then
-				return
-			end
-		end, bufnr)
-	end,
 })
 
 require("lang.java")

@@ -1,3 +1,21 @@
+local MasonRegistry = require("mason-registry")
+
+local languageServersAndTools = {
+	"gofumpt",
+	"goimports",
+	"gopls",
+}
+
+MasonRegistry.refresh(function()
+	for _, tool in ipairs(languageServersAndTools) do
+		local p = MasonRegistry.get_package(tool)
+		if not p:is_installed() then
+			p:install()
+		end
+	end
+end)
+
+vim.lsp.enable("gopls")
 vim.lsp.config("gopls", {
 	settings = {
 		gopls = {

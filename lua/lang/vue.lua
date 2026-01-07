@@ -1,8 +1,20 @@
----@diagnostic disable: assign-type-mismatch, redundant-return-value
-local vueLanguageServerPath = vim.fn.expand("$MASON/packages")
-	.. "/vue-language-server"
-	.. "/node_modules/@vue/language-server"
+local MasonRegistry = require("mason-registry")
 
+local languageServersAndTools = {
+	"vtsls",
+	"vue-language-server",
+}
+
+MasonRegistry.refresh(function()
+	for _, tool in ipairs(languageServersAndTools) do
+		local p = MasonRegistry.get_package(tool)
+		if not p:is_installed() then
+			p:install()
+		end
+	end
+end)
+
+vim.lsp.enable({ "vtsls", "vue_ls" })
 vim.lsp.config("vtsls", {
 	filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
 	settings = {
@@ -20,7 +32,9 @@ vim.lsp.config("vtsls", {
 				globalPlugins = {
 					{
 						name = "@vue/typescript-plugin",
-						location = vueLanguageServerPath,
+						location = vim.fn.expand("$MASON/packages")
+							.. "/vue-language-server"
+							.. "/node_modules/@vue/language-server",
 						languages = { "vue" },
 						configNamespace = "typescript",
 						enableForWorkspaceTypeScriptVersions = true,

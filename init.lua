@@ -1,7 +1,7 @@
 vim.api.nvim_exec2([[language en_CA.UTF-8]], { output = false })
 
 vim.o.number = true
-vim.o.relativenumber = false
+vim.o.relativenumber = true
 vim.o.signcolumn = "yes"
 vim.o.wrap = false
 vim.o.shell = "fish"
@@ -233,7 +233,6 @@ vim.api.nvim_create_autocmd("FileType", {
 				vim.wo.foldlevel = 99
 				vim.wo.foldmethod = "expr"
 				vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-				vim.bo.indentexpr = 'v:lua.require"nvim-treesitter".indentexpr()'
 				vim.treesitter.start()
 				return
 			end
@@ -262,20 +261,19 @@ vim.api.nvim_create_autocmd("UIEnter", {
 		vim.print = _G.dd
 
     -- stylua: ignore start
-		Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
 		Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
 		Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
 		Snacks.toggle.diagnostics():map("<leader>ud")
 		Snacks.toggle.line_number():map("<leader>ul")
 		Snacks.toggle.option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):map("<leader>uc")
-		Snacks.toggle.treesitter():map("<leader>uT")
-		Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
+		Snacks.toggle.treesitter():map("<leader>uT")		Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
 		Snacks.toggle.inlay_hints():map("<leader>uh")
 		Snacks.toggle.indent():map("<leader>ug")
 		Snacks.toggle.dim():map("<leader>uD")
     -- stylua: ignore end
 	end,
 })
+
 vim.api.nvim_create_autocmd("User", {
 	pattern = "MiniFilesActionRename",
 	callback = function(event)
@@ -293,3 +291,4 @@ vim.cmd("colorscheme catppuccin-mocha")
 
 require("debugger")
 require("lsp")
+require("ai")

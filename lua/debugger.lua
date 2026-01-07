@@ -37,8 +37,7 @@ DapExtVscode.json_decode = function(str)
   return vim.json.decode(PlenaryJson.json_strip_comments(str))
 end
 
-vim.keymap.set("n", "<leader>dB", function() Dap.set_breakpoint(vim.fn.input('Breakpoint condition: ')) end,
-  { desc = "Breakpoint Condition" })
+vim.keymap.set("n", "<leader>dB", function() Dap.set_breakpoint(vim.fn.input('Breakpoint condition: ')) end,  { desc = "Breakpoint Condition" })
 vim.keymap.set("n", "<leader>db", function() Dap.toggle_breakpoint() end, { desc = "Toggle Breakpoint" })
 vim.keymap.set("n", "<leader>dc", function() Dap.continue() end, { desc = "Run/Continue" })
 -- vim.keymap.set("n",  "<leader>da", function() Dap.continue({ before = get_args }) end, { desc = "Run with Args"})
