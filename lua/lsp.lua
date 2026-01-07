@@ -5,15 +5,13 @@ vim.pack.add({
 	{ src = "https://github.com/saghen/blink.cmp" },
 })
 
-local languageServers = {
+local languageServersAndTools = {
 	"json-lsp",
 	"lua-language-server",
 	"pyright",
 	"terraform-ls",
 	"yaml-language-server",
-}
-
-local formattersAndTools = {
+  --
 	"black",
 	"gofumpt",
 	"goimports",
@@ -135,16 +133,7 @@ vim.keymap.set("n",  "<leader>sS", Snacks.picker.lsp_workspace_symbols, { desc =
 -- stylua: ignore end
 
 MasonRegistry.refresh(function()
-	for _, tool in ipairs(languageServers) do
-		local p = MasonRegistry.get_package(tool)
-		if not p:is_installed() then
-			p:install()
-		end
-	end
-end)
-
-MasonRegistry.refresh(function()
-	for _, tool in ipairs(formattersAndTools) do
+	for _, tool in ipairs(languageServersAndTools) do
 		local p = MasonRegistry.get_package(tool)
 		if not p:is_installed() then
 			p:install()
