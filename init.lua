@@ -47,7 +47,7 @@ local languageTreeSitters = {
 	"gosum",
 	"gowork",
 	"graphql",
-  "groovy",
+	"groovy",
 	"html",
 	"java",
 	"javascript",
@@ -129,7 +129,7 @@ vim.keymap.set("n", "<leader>fM", function()	MiniFiles.open(vim.uv.cwd())end, { 
 vim.keymap.set("n", "<leader>/", function()	Snacks.picker.grep({ hidden = true })end, { desc = "Grep" })
 vim.keymap.set("n", "<leader><space>", function()	Snacks.picker.smart({ hidden = true })end, { desc = "Find Files" })
 vim.keymap.set("n", "<leader>,", Snacks.picker.buffers, { desc = "Buffers" })
-vim.keymap.set("n", "<leader>n", Snacks.picker.notifications, { desc = "Notifications" })
+vim.keymap.set("n", "<leader>n", function() Snacks.picker.notifications({ win = { preview = { wo = { wrap = true, linebreak = true, showbreak = "", breakindent = true, } } } }) end, { desc = "Notifications" })
 vim.keymap.set("n", "<leader>sj", Snacks.picker.jumps, { desc = "Jumps" })
 vim.keymap.set("n", "<leader>gg", function()	Snacks.lazygit()end, { desc = "Lazygit" })
 vim.keymap.set("n", "<leader>bd", function()	Snacks.bufdelete()end, { desc = "Delete Buffer" })
@@ -212,16 +212,39 @@ Noice.setup({
 })
 Blink.setup({
 	fuzzy = { implementation = "lua" },
+	completion = {
+		menu = {
+			auto_show = false,
+		},
+		ghost_text = {
+			enabled = true,
+		},
+    accept = {
+      auto_brackets = {
+        enabled = false
+      }
+    }
+	},
+  -- stylua: ignore start
 	keymap = {
 		preset = "none",
-		["<CR>"] = { "accept", "fallback" },
 		["<C-f>"] = { "accept", "fallback" },
 		["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
-		["<C-x>"] = { "hide", "fallback" },
+		["<CR>"] = { function(cmp) if Blink.accept() then return cmp.hide() end end,	"fallback" },
+		["<C-x>"] = { function(cmp) if Blink.is_menu_visible() then return cmp.hide() end end,	"fallback" },
+		["<Tab>"] = { function(cmp) if Blink.is_menu_visible() then return cmp.select_next()	end	end,"fallback" },
+		["<S-Tab>"] = { function(cmp) if Blink.is_menu_visible() then return cmp.select_prev()	end	end,"fallback" },
 		["<Up>"] = { "select_prev", "fallback" },
 		["<Down>"] = { "select_next", "fallback" },
 		["<C-u>"] = { "scroll_documentation_up", "fallback" },
 		["<C-d>"] = { "scroll_documentation_down", "fallback" },
+	},
+  -- stylua: ignore end
+	cmdline = {
+		keymap = {
+			preset = "none",
+			["<C-f>"] = { "accept" },
+		},
 	},
 })
 
