@@ -2,8 +2,8 @@ require("util")
 
 vim.pack.add({
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
-	{ src = "https://github.com/stevearc/conform.nvim" },
 	{ src = "https://github.com/saghen/blink.cmp" },
+	{ src = "https://github.com/stevearc/conform.nvim" },
 })
 
 local languageServersAndTools = {
@@ -19,13 +19,22 @@ local languageServersAndTools = {
 	"google-java-format",
 	"isort",
 	"prettierd",
+  "sqlfluff",
 	"stylua",
+	"xmlformatter",
 }
 
-local Conform = require("conform")
+MasonCheckAndInstallPackages(languageServersAndTools)
+
 local Blink = require("blink.cmp")
+local Conform = require("conform")
 
 Conform.setup({
+	formatters = {
+		sqlfluff = {
+			args = { "format", "--dialect=ansi", "-" },
+		},
+	},
 	formatters_by_ft = {
 		astro = { "prettierd" },
 		css = { "prettierd" },
@@ -41,14 +50,18 @@ Conform.setup({
 		lua = { "stylua" },
 		markdown = { "prettierd" },
 		["markdown.mdx"] = { "prettierd" },
+		mysql = { "sqlfluff" },
+		plsql = { "sqlfluff" },
 		python = { "isort", "black" },
 		rust = { lsp_format = "fallback" },
 		scss = { "prettierd" },
+		sql = { "sqlfluff" },
 		svelte = { "prettierd" },
 		toml = { "prettierd" },
 		typescript = { "prettierd" },
 		typescriptreact = { "prettierd" },
 		vue = { "prettierd" },
+		xml = { "xmlformatter" },
 		yaml = { "prettierd" },
 	},
 	default_format_opts = {
@@ -92,62 +105,60 @@ Blink.setup({
   -- stylua: ignore start
 	keymap = {
 		preset = "none",
+		["<C-d>"] = { "scroll_documentation_down", "fallback" },
 		["<C-f>"] = { "accept", "fallback" },
 		["<C-g>"] = { function(cmp) if cmp.get_items()[1] ~= nil and cmp.get_items()[1].source_id == "copilot" then if cmp.select_next({auto_insert = false, on_ghost_text = true}) then return true end end return cmp.show({ providers = { "copilot" }}) end },
 		["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
-		["<CR>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.accept() end end,	"fallback" },
-		["<C-x>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.hide() end end,	"fallback" },
-		["<Tab>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.select_next()	end	end,"fallback" },
-		["<S-Tab>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.select_prev()	end	end,"fallback" },
-		["<Up>"] = { "select_prev", "fallback" },
-		["<Down>"] = { "select_next", "fallback" },
 		["<C-u>"] = { "scroll_documentation_up", "fallback" },
-		["<C-d>"] = { "scroll_documentation_down", "fallback" },
+		["<C-x>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.hide() end end,	"fallback" },
+		["<CR>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.accept() end end,	"fallback" },
+		["<Down>"] = { "select_next", "fallback" },
+		["<S-Tab>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.select_prev()	end	end,"fallback" },
+		["<Tab>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.select_next()	end	end,"fallback" },
+		["<Up>"] = { "select_prev", "fallback" },
 	},
 	cmdline = {
 		keymap = {
 			preset = "none",
 			["<C-f>"] = { "accept", "fallback" },
-			["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
-      ["<CR>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.accept() end end,	"fallback" },
-      ["<C-x>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.hide() end end,	"fallback" },
-      ["<Tab>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.select_next()	end	end,"fallback" },
-      ["<S-Tab>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.select_prev()	end	end,"fallback" },
-      ["<Up>"] = { "select_prev", "fallback" },
-      ["<Down>"] = { "select_next", "fallback" },
-      ["<C-u>"] = { "scroll_documentation_up", "fallback" },
       ["<C-d>"] = { "scroll_documentation_down", "fallback" },
+			["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+      ["<C-u>"] = { "scroll_documentation_up", "fallback" },
+      ["<C-x>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.hide() end end,	"fallback" },
+      ["<CR>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.accept() end end,	"fallback" },
+      ["<Down>"] = { "select_next", "fallback" },
+      ["<S-Tab>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.select_prev()	end	end,"fallback" },
+      ["<Tab>"] = { function(cmp) if cmp.is_menu_visible() then return cmp.select_next()	end	end,"fallback" },
+      ["<Up>"] = { "select_prev", "fallback" },
 		},
 	},
 	-- stylua: ignore end
 })
 
 -- stylua: ignore start
-vim.keymap.set("n", "]]", function() Snacks.words.jump(vim.v.count1) end, { desc = "Next Reference", })
-vim.keymap.set("n", "[[", function() Snacks.words.jump(-vim.v.count1) end, { desc = "Prev Reference", })
+vim.keymap.set("n", "<C-b>", "<Plug>(nvim.lsp.ctrl-s)")
 vim.keymap.set("n", "<a-n>", function() Snacks.words.jump(vim.v.count1, true) end, { desc = "Next Reference", })
 vim.keymap.set("n", "<a-p>", function() Snacks.words.jump(-vim.v.count1, true) end, { desc = "Prev Reference", })
-vim.keymap.set("n", "gd", Snacks.picker.lsp_definitions, { desc = "Goto Definition" })
-vim.keymap.set("n", "gr", Snacks.picker.lsp_references, { desc = "References" })
-vim.keymap.set("n", "gI", Snacks.picker.lsp_implementations, { desc = "Goto Implementation" })
-vim.keymap.set("n", "gy", Snacks.picker.lsp_type_definitions, { desc = "Goto T[y]pe Definition" })
-vim.keymap.set("n", "gD", Snacks.picker.lsp_declarations, { desc = "Goto Declaration" })
-vim.keymap.set("n", "gk", function() return vim.lsp.buf.hover() end, { desc = "Hover" })
-vim.keymap.set("n", "gK", function() return vim.lsp.buf.signature_help() end, { desc = "Signature Help" })
-vim.keymap.set({"n", "i"}, "<C-k>", function() return vim.lsp.buf.signature_help() end, { desc = "Signature Help" })
-vim.keymap.set("n", "<C-b>", "<Plug>(nvim.lsp.ctrl-s)")
-vim.keymap.set("n", "<leader>cl", function() Snacks.picker.lsp_config() end, { desc = "Lsp Info" })
-vim.keymap.set({ "n", "x" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Action" })
-vim.keymap.set({ "n", "x" }, "<leader>cc", vim.lsp.codelens.run, { desc = "Run Codelens" })
 vim.keymap.set("n", "<leader>cC", vim.lsp.codelens.refresh, { desc = "Refresh & Display Codelens" })
 vim.keymap.set("n", "<leader>cR", function() Snacks.rename.rename_file() end, { desc = "Rename File" })
+vim.keymap.set("n", "<leader>cl", function() Snacks.picker.lsp_config() end, { desc = "Lsp Info" })
 vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { desc = "Rename" })
+vim.keymap.set("n", "<leader>sS", Snacks.picker.lsp_workspace_symbols, { desc = "Workspace Symbols"})
+vim.keymap.set("n", "<leader>ss", Snacks.picker.lsp_symbols, { desc = "Symbols"})
+vim.keymap.set("n", "[[", function() Snacks.words.jump(-vim.v.count1) end, { desc = "Prev Reference", })
+vim.keymap.set("n", "]]", function() Snacks.words.jump(vim.v.count1) end, { desc = "Next Reference", })
+vim.keymap.set("n", "gD", Snacks.picker.lsp_declarations, { desc = "Goto Declaration" })
+vim.keymap.set("n", "gI", Snacks.picker.lsp_implementations, { desc = "Goto Implementation" })
+vim.keymap.set("n", "gK", function() return vim.lsp.buf.signature_help() end, { desc = "Signature Help" })
+vim.keymap.set("n", "gd", Snacks.picker.lsp_definitions, { desc = "Goto Definition" })
+vim.keymap.set("n", "gk", function() return vim.lsp.buf.hover() end, { desc = "Hover" })
+vim.keymap.set("n", "gr", Snacks.picker.lsp_references, { desc = "References" })
+vim.keymap.set("n", "gy", Snacks.picker.lsp_type_definitions, { desc = "Goto T[y]pe Definition" })
+vim.keymap.set({ "n", "i" }, "<C-k>", function() return vim.lsp.buf.signature_help() end, { desc = "Signature Help" })
 vim.keymap.set({ "n", "v" }, "<leader>cf", function()	Conform.format()end, { desc = "Format code" })
-vim.keymap.set("n",  "<leader>ss", Snacks.picker.lsp_symbols, { desc = "Symbols"})
-vim.keymap.set("n",  "<leader>sS", Snacks.picker.lsp_workspace_symbols, { desc = "Workspace Symbols"})
+vim.keymap.set({ "n", "x" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Action" })
+vim.keymap.set({ "n", "x" }, "<leader>cc", vim.lsp.codelens.run, { desc = "Run Codelens" })
 -- stylua: ignore end
-
-MasonCheckAndInstallPackages(languageServersAndTools)
 
 vim.lsp.config("*", {
 	capabilities = {
@@ -268,3 +279,5 @@ require("lang.java")
 require("lang.go")
 require("lang.rust")
 require("lang.vue")
+require("lang.csv")
+require("lang.sql")

@@ -1,17 +1,17 @@
 require("util")
 
 vim.pack.add({
-	{ src = "https://github.com/nvim-neotest/nvim-nio" },
-	{ src = "https://github.com/theHamsta/nvim-dap-virtual-text" },
-	{ src = "https://github.com/rcarriga/nvim-dap-ui" },
 	{ src = "https://github.com/mfussenegger/nvim-dap" },
+	{ src = "https://github.com/nvim-neotest/nvim-nio" },
+	{ src = "https://github.com/rcarriga/nvim-dap-ui" },
+	{ src = "https://github.com/theHamsta/nvim-dap-virtual-text" },
 })
 
-local NvimDapVirtualText = require("nvim-dap-virtual-text")
-local Dapui = require("dapui")
-local DapUiWidget = require("dap.ui.widgets")
 local Dap = require("dap")
 local DapExtVscode = require("dap.ext.vscode")
+local DapUiWidget = require("dap.ui.widgets")
+local Dapui = require("dapui")
+local NvimDapVirtualText = require("nvim-dap-virtual-text")
 local PlenaryJson = require("plenary.json")
 
 NvimDapVirtualText.setup({})

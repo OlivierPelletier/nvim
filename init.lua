@@ -46,80 +46,80 @@ local languageTreeSitters = {
 -- stylua: ignore start
 
 vim.pack.add({
+	{ src = "https://github.com/MunifTanjim/nui.nvim" },
+	{ src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2" },
+	{ src = "https://github.com/akinsho/bufferline.nvim" },
 	{ src = "https://github.com/catppuccin/nvim" },
+	{ src = "https://github.com/folke/lazydev.nvim" },
+	{ src = "https://github.com/folke/noice.nvim" },
+	{ src = "https://github.com/folke/snacks.nvim" },
+	{ src = "https://github.com/folke/which-key.nvim" },
+	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
+	{ src = "https://github.com/mason-org/mason.nvim" },
+	{ src = "https://github.com/nvim-lua/plenary.nvim" },
+	{ src = "https://github.com/nvim-lualine/lualine.nvim" },
+	{ src = "https://github.com/nvim-mini/mini.files" },
 	{ src = "https://github.com/nvim-mini/mini.icons" },
 	{ src = "https://github.com/nvim-tree/nvim-web-devicons" },
-	{ src = "https://github.com/folke/which-key.nvim" },
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
-	{ src = "https://github.com/nvim-lua/plenary.nvim" },
-	{ src = "https://github.com/folke/snacks.nvim" },
-	{ src = "https://github.com/nvim-mini/mini.files" },
-	{ src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2" },
-	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
-	{ src = "https://github.com/akinsho/bufferline.nvim" },
 	{ src = "https://github.com/petertriho/nvim-scrollbar" },
-	{ src = "https://github.com/nvim-lualine/lualine.nvim" },
 	{ src = "https://github.com/rcarriga/nvim-notify" },
-	{ src = "https://github.com/MunifTanjim/nui.nvim" },
-	{ src = "https://github.com/folke/noice.nvim" },
-	{ src = "https://github.com/folke/lazydev.nvim" },
-	{ src = "https://github.com/mason-org/mason.nvim" },
 })
 
+local Bufferline = require("bufferline")
 local Catppuccin = require("catppuccin")
 local CatppuccinPalettes = require("catppuccin.palettes")
-local MiniIcons = require("mini.icons")
-local NvimWebDevIcons = require("nvim-web-devicons")
-local Snacks = require("snacks")
-local WhichKey = require("which-key")
-local TreeSitter = require("nvim-treesitter")
-local MiniFiles = require("mini.files")
-local Harpoon = require("harpoon")
 local GitSigns = require("gitsigns")
-local Bufferline = require("bufferline")
-local ScrollBar = require("scrollbar")
-local LuaLine = require("lualine")
-local Noice = require("noice")
+local Harpoon = require("harpoon")
 local LazyDev = require("lazydev")
+local LuaLine = require("lualine")
 local Mason = require("mason")
+local MiniFiles = require("mini.files")
+local MiniIcons = require("mini.icons")
+local Noice = require("noice")
+local NvimWebDevIcons = require("nvim-web-devicons")
+local ScrollBar = require("scrollbar")
+local Snacks = require("snacks")
+local TreeSitter = require("nvim-treesitter")
+local WhichKey = require("which-key")
 
 -- stylua: ignore start
-vim.keymap.set("n", "J", "gJ", { noremap = true, silent = true })
-vim.keymap.set("n", "K", "kgJ", { noremap = true, silent = true })
-vim.keymap.set({ "n", "v", "x" }, "<C-s>", "<cmd>write<CR>", { desc = "Save" })
-vim.keymap.set({ "n", "v", "x" }, "<C-x>", "<cmd>noh<CR>", { desc = "Remove Search Highlights" })
-vim.keymap.set({ "n", "v", "x" }, "<C-n>", "<cmd>enew<CR>", { desc = "New Buffer" })
-vim.keymap.set({ "i" }, "<C-s>", "<cmd>write<CR>", { desc = "Save" })
-vim.keymap.set({ "i" }, "<C-x>", "<cmd>noh<CR>", { desc = "Remove Search Highlights" })
-vim.keymap.set({ "i" }, "<C-n>", "<cmd>enew<CR>", { desc = "New Buffer" })
-vim.keymap.set({ "n", "t" }, "<c-/>", function() Snacks.terminal() end, { desc = "Toggle Terminal" })
-vim.keymap.set("n", "<leader>e", MiniFiles.open, { desc = "Files Explorer" })
-vim.keymap.set("n", "<leader>fm", function()	MiniFiles.open(vim.api.nvim_buf_get_name(0))end, { desc = "Files Explorer" })
-vim.keymap.set("n", "<leader>fM", function()	MiniFiles.open(vim.uv.cwd())end, { desc = "Files Explorer (cwd)" })
-vim.keymap.set("n", "<leader>/", function()	Snacks.picker.grep({ hidden = true })end, { desc = "Grep" })
-vim.keymap.set("n", "<leader><space>", function()	Snacks.picker.smart({ hidden = true })end, { desc = "Find Files" })
-vim.keymap.set("n", "<leader>,", Snacks.picker.buffers, { desc = "Buffers" })
-vim.keymap.set("n", "<leader>n", function() Snacks.picker.notifications({ win = { preview = { wo = { wrap = true, linebreak = true, showbreak = "", breakindent = true, } } } }) end, { desc = "Notifications" })
-vim.keymap.set("n", "<leader>sj", Snacks.picker.jumps, { desc = "Jumps" })
-vim.keymap.set("n", "<leader>gg", function()	Snacks.lazygit()end, { desc = "Lazygit" })
-vim.keymap.set("n", "<leader>bd", function()	Snacks.bufdelete()end, { desc = "Delete Buffer" })
-vim.keymap.set("n", "<leader>bo", Snacks.bufdelete.other, { desc = "Delete Other Buffers" })
-vim.keymap.set("n", "<leader>bb", "<cmd>b#<CR>", { desc = "Previous Buffer" })
-vim.keymap.set("n", "<leader>gd", function()	Snacks.picker.git_diff()end, { desc = "Git Diff (Hunks)" })
-vim.keymap.set("n", "<M-q>", function()	Harpoon:list():add()end, { desc = "Harpoon Add" })
+vim.keymap.set("i", "<C-n>", "<cmd>enew<CR>", { desc = "New Buffer" })
+vim.keymap.set("i", "<C-s>", "<cmd>write<CR>", { desc = "Save" })
+vim.keymap.set("i", "<C-x>", "<cmd>noh<CR>", { desc = "Remove Search Highlights" })
 vim.keymap.set("n", "<M-/>", function()	Harpoon.ui:toggle_quick_menu(Harpoon:list())end, { desc = "Harpoon Quick Menu" })
 vim.keymap.set("n", "<M-1>", function()	Harpoon:list():select(1)end, { desc = "Harpoon Select 1" })
 vim.keymap.set("n", "<M-2>", function()	Harpoon:list():select(2)end, { desc = "Harpoon Select 2" })
 vim.keymap.set("n", "<M-3>", function()	Harpoon:list():select(3)end, { desc = "Harpoon Select 3" })
 vim.keymap.set("n", "<M-4>", function()	Harpoon:list():select(4)end, { desc = "Harpoon Select 4" })
-vim.keymap.set("n", "<leader>ghs", GitSigns.stage_hunk, { desc = "Stage Hunk" })
-vim.keymap.set("n", "<leader>ghr", GitSigns.reset_hunk, { desc = "Reset Hunk" })
-vim.keymap.set("n", "<leader>ghS", GitSigns.stage_buffer, { desc = "Stage Buffer" })
+vim.keymap.set("n", "<M-q>", function()	Harpoon:list():add()end, { desc = "Harpoon Add" })
+vim.keymap.set("n", "<leader>,", Snacks.picker.buffers, { desc = "Buffers" })
+vim.keymap.set("n", "<leader>/", function()	Snacks.picker.grep({ hidden = true })end, { desc = "Grep" })
+vim.keymap.set("n", "<leader><space>", function()	Snacks.picker.smart({ hidden = true })end, { desc = "Find Files" })
+vim.keymap.set("n", "<leader>bb", "<cmd>b#<CR>", { desc = "Previous Buffer" })
+vim.keymap.set("n", "<leader>bd", function()	Snacks.bufdelete()end, { desc = "Delete Buffer" })
+vim.keymap.set("n", "<leader>bo", Snacks.bufdelete.other, { desc = "Delete Other Buffers" })
+vim.keymap.set("n", "<leader>e", MiniFiles.open, { desc = "Files Explorer" })
+vim.keymap.set("n", "<leader>fM", function()	MiniFiles.open(vim.uv.cwd())end, { desc = "Files Explorer (cwd)" })
+vim.keymap.set("n", "<leader>fm", function()	MiniFiles.open(vim.api.nvim_buf_get_name(0))end, { desc = "Files Explorer" })
+vim.keymap.set("n", "<leader>gd", function()	Snacks.picker.git_diff()end, { desc = "Git Diff (Hunks)" })
+vim.keymap.set("n", "<leader>gg", function()	Snacks.lazygit()end, { desc = "Lazygit" })
 vim.keymap.set("n", "<leader>ghR", GitSigns.reset_buffer, { desc = "Reset Buffer" })
-vim.keymap.set("n", "<leader>ghp", GitSigns.preview_hunk, { desc = "Preview Hunk" })
-vim.keymap.set("n", "<leader>ghi", GitSigns.preview_hunk_inline, { desc = "Preview Hunk Inline" })
+vim.keymap.set("n", "<leader>ghS", GitSigns.stage_buffer, { desc = "Stage Buffer" })
 vim.keymap.set("n", "<leader>ghb", function()	GitSigns.blame_line({ full = true })end, { desc = "Show Blame" })
 vim.keymap.set("n", "<leader>ghd", GitSigns.diffthis, { desc = "Diff This" })
+vim.keymap.set("n", "<leader>ghi", GitSigns.preview_hunk_inline, { desc = "Preview Hunk Inline" })
+vim.keymap.set("n", "<leader>ghp", GitSigns.preview_hunk, { desc = "Preview Hunk" })
+vim.keymap.set("n", "<leader>ghr", GitSigns.reset_hunk, { desc = "Reset Hunk" })
+vim.keymap.set("n", "<leader>ghs", GitSigns.stage_hunk, { desc = "Stage Hunk" })
+vim.keymap.set("n", "<leader>n", function() Snacks.picker.notifications({ win = { preview = { wo = { wrap = true, linebreak = true, showbreak = "", breakindent = true, } } } }) end, { desc = "Notifications" })
+vim.keymap.set("n", "<leader>sj", Snacks.picker.jumps, { desc = "Jumps" })
+vim.keymap.set("n", "J", "gJ", { noremap = true, silent = true })
+vim.keymap.set("n", "K", "kgJ", { noremap = true, silent = true })
+vim.keymap.set({ "n", "t" }, "<c-/>", function() Snacks.terminal() end, { desc = "Toggle Terminal" })
+vim.keymap.set({ "n", "v", "x" }, "<C-n>", "<cmd>enew<CR>", { desc = "New Buffer" })
+vim.keymap.set({ "n", "v", "x" }, "<C-s>", "<cmd>write<CR>", { desc = "Save" })
+vim.keymap.set({ "n", "v", "x" }, "<C-x>", "<cmd>noh<CR>", { desc = "Remove Search Highlights" })
 vim.keymap.set({ "o", "x" }, "ih", GitSigns.select_hunk, { desc = "Inner Hunk" })
 -- stylua: ignore end
 
@@ -215,16 +215,16 @@ Noice.setup({
 Mason.setup()
 
 WhichKey.add({
-	{ "<leader>f", group = "files" },
 	{ "<leader>b", group = "buffers" },
 	{ "<leader>c", group = "code" },
-	{ "<leader>x", group = "lsp extra" },
-	{ "<leader>s", group = "search" },
-	{ "<leader>u", group = "toggles" },
+	{ "<leader>d", group = "debug" },
+	{ "<leader>f", group = "files" },
 	{ "<leader>g", group = "git" },
 	{ "<leader>gh", group = "hunk" },
-	{ "<leader>d", group = "debug" },
+	{ "<leader>s", group = "search" },
 	{ "<leader>t", group = "test" },
+	{ "<leader>u", group = "toggles" },
+	{ "<leader>x", group = "lsp extra" },
 })
 
 vim.api.nvim_create_autocmd("FileType", {
