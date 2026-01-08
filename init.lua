@@ -95,6 +95,7 @@ vim.pack.add({
 	{ src = "https://github.com/nvim-mini/mini.files" },
 	{ src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2" },
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
+	{ src = "https://github.com/akinsho/bufferline.nvim" },
 	{ src = "https://github.com/nvim-lualine/lualine.nvim" },
 	{ src = "https://github.com/rcarriga/nvim-notify" },
 	{ src = "https://github.com/MunifTanjim/nui.nvim" },
@@ -112,6 +113,7 @@ local MiniFiles = require("mini.files")
 local Harpoon = require("harpoon")
 local GitSigns = require("gitsigns")
 local LuaLine = require("lualine")
+local Bufferline = require("bufferline")
 local Noice = require("noice")
 local LazyDev = require("lazydev")
 
@@ -195,6 +197,19 @@ LuaLine.setup({
 		globalstatus = true,
 	},
 })
+Bufferline.setup({
+	highlights = require("catppuccin.special.bufferline").get_theme({
+		styles = { "bold" },
+	}),
+	options = {
+		show_buffer_close_icons = false,
+		show_tab_indicators = false,
+		show_close_icon = false,
+		custom_filter = function(buf_number, _)
+			return buf_number == vim.api.nvim_get_current_buf() or vim.bo[buf_number].modified
+		end,
+	},
+})
 Noice.setup({
 	lsp = {
 		override = {
@@ -217,6 +232,7 @@ WhichKey.add({
 	{ "<leader>f", group = "files" },
 	{ "<leader>b", group = "buffers" },
 	{ "<leader>c", group = "code" },
+	{ "<leader>x", group = "lsp extra" },
 	{ "<leader>s", group = "search" },
 	{ "<leader>u", group = "toggles" },
 	{ "<leader>g", group = "git" },
@@ -270,7 +286,7 @@ vim.api.nvim_create_autocmd("UIEnter", {
 		Snacks.toggle.inlay_hints():map("<leader>uh")
 		Snacks.toggle.indent():map("<leader>ug")
 		Snacks.toggle.dim():map("<leader>uD")
-    -- stylua: ignore end
+		-- stylua: ignore end
 	end,
 })
 
@@ -292,3 +308,16 @@ vim.cmd("colorscheme catppuccin-mocha")
 require("debugger")
 require("lsp")
 require("ai")
+
+local packagesToDelete = vim.iter(vim.pack.get())
+	:filter(function(x)
+		return not x.active
+	end)
+	:map(function(x)
+		return x.spec.name
+	end)
+	:totable()
+
+if #packagesToDelete > 0 then
+	vim.pack.del(packagesToDelete)
+end
