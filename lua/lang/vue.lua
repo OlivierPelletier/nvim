@@ -14,7 +14,6 @@ MasonRegistry.refresh(function()
 	end
 end)
 
-vim.lsp.enable({ "vtsls", "vue_ls" })
 vim.lsp.config("vtsls", {
 	filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
 	settings = {
@@ -73,6 +72,7 @@ vim.lsp.config("vtsls", {
 	},
 })
 vim.lsp.config("vue_ls", {})
+vim.lsp.enable({ "vtsls", "vue_ls" })
 
 Snacks.util.lsp.on({ name = "vtsls" }, function(_, client)
 	client.commands["_typescript.moveToFileRefactoring"] = function(command, _)

@@ -141,13 +141,6 @@ MasonRegistry.refresh(function()
 	end
 end)
 
-vim.lsp.enable({
-	"json-ls",
-	"lua_ls",
-	"pyright",
-	"terraformls",
-	"yamlls",
-})
 vim.lsp.config("*", {
 	capabilities = {
 		workspace = {
@@ -183,6 +176,13 @@ vim.lsp.config("lua_ls", {
 			},
 		},
 	},
+})
+vim.lsp.enable({
+	"json-ls",
+	"lua_ls",
+	"pyright",
+	"terraformls",
+	"yamlls",
 })
 
 -- inlayHint, folds and codeLens

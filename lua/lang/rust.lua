@@ -13,5 +13,5 @@ MasonRegistry.refresh(function()
 	end
 end)
 
-vim.lsp.enable("rust_analyzer")
 vim.lsp.config("rust_analyzer", {})
+vim.lsp.enable("rust_analyzer")

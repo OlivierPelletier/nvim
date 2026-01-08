@@ -15,7 +15,6 @@ MasonRegistry.refresh(function()
 	end
 end)
 
-vim.lsp.enable("gopls")
 vim.lsp.config("gopls", {
 	settings = {
 		gopls = {
@@ -53,6 +52,7 @@ vim.lsp.config("gopls", {
 		},
 	},
 })
+vim.lsp.enable("gopls")
 
 Snacks.util.lsp.on({ name = "gopls" }, function(_, client)
 	if not client.server_capabilities.semanticTokensProvider then
