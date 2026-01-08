@@ -7,6 +7,7 @@ vim.pack.add({
 })
 
 local languageServersAndTools = {
+  "fish-lsp",
 	"json-lsp",
 	"lua-language-server",
 	"pyright",
@@ -197,6 +198,7 @@ vim.lsp.config("lua_ls", {
 	},
 })
 vim.lsp.enable({
+  "fish_lsp",
 	"json-ls",
 	"lua_ls",
 	"pyright",
