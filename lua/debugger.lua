@@ -6,6 +6,7 @@ vim.pack.add({
 	{ src = "https://github.com/rcarriga/nvim-dap-ui" },
 	{ src = "https://github.com/mfussenegger/nvim-dap" },
 })
+
 local NvimDapVirtualText = require("nvim-dap-virtual-text")
 local Dapui = require("dapui")
 local DapUiWidget = require("dap.ui.widgets")
