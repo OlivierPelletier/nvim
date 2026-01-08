@@ -2,31 +2,31 @@ vim.api.nvim_exec2([[language en_CA.UTF-8]], { output = false })
 
 vim.o.number = true
 vim.o.relativenumber = true
+vim.o.shell = "fish"
 vim.o.signcolumn = "yes"
 vim.o.wrap = false
-vim.o.shell = "fish"
 
-vim.o.tabstop = 2
-vim.o.shiftwidth = 2
-vim.o.softtabstop = 2
 vim.o.expandtab = true
+vim.o.shiftwidth = 2
 vim.o.smartindent = true
+vim.o.softtabstop = 2
+vim.o.tabstop = 2
 
+vim.o.backup = false
 vim.o.swapfile = false
 vim.o.undofile = true
-vim.o.backup = false
 vim.o.writebackup = false
 
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
-vim.o.winborder = "rounded"
-vim.o.termguicolors = true
 vim.o.confirm = true
+vim.o.cursorline = true
+vim.o.laststatus = 3
 vim.o.showtabline = 0
 vim.o.statusline = " "
-vim.o.laststatus = 3
-vim.o.cursorline = true
+vim.o.termguicolors = true
+vim.o.winborder = "rounded"
 
 vim.o.clipboard = "unnamedplus"
 
@@ -36,53 +36,14 @@ vim.diagnostic.config({
 	virtual_text = true,
 })
 
+-- stylua: ignore start
 local languageTreeSitters = {
-	"bash",
-	"c",
-	"cpp",
-	"css",
-	"csv",
-	"diff",
-	"fish",
-	"go",
-	"gomod",
-	"gosum",
-	"gowork",
-	"graphql",
-	"groovy",
-	"hcl",
-	"html",
-	"java",
-	"javascript",
-	"jsdoc",
-	"json",
-	"lua",
-	"luadoc",
-	"luap",
-	"make",
-	"markdown",
-	"markdown_inline",
-	"printf",
-	"properties",
-	"python",
-	"query",
-	"regex",
-	"requirements",
-	"ron",
-	"rust",
-	"scss",
-	"sql",
-	"terraform",
-	"tmux",
-	"toml",
-	"tsx",
-	"typescript",
-	"vim",
-	"vimdoc",
-	"vue",
-	"xml",
-	"yaml",
+  "bash", "c", "cpp", "css", "csv", "diff", "fish", "go", "gomod", "gosum", "gowork", "graphql", "groovy",
+  "hcl", "html", "java", "javascript", "jsdoc", "json", "lua", "luadoc", "luap", "make", "markdown", "markdown_inline",
+  "printf", "properties", "python", "query", "regex", "requirements", "ron", "rust", "scss", "sql", "terraform", "tmux",
+  "toml", "tsx", "typescript", "vim", "vimdoc", "vue", "xml", "yaml",
 }
+-- stylua: ignore start
 
 vim.pack.add({
 	{ src = "https://github.com/catppuccin/nvim" },
@@ -96,6 +57,7 @@ vim.pack.add({
 	{ src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2" },
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
 	{ src = "https://github.com/akinsho/bufferline.nvim" },
+	{ src = "https://github.com/petertriho/nvim-scrollbar" },
 	{ src = "https://github.com/nvim-lualine/lualine.nvim" },
 	{ src = "https://github.com/rcarriga/nvim-notify" },
 	{ src = "https://github.com/MunifTanjim/nui.nvim" },
@@ -104,6 +66,7 @@ vim.pack.add({
 })
 
 local Catppuccin = require("catppuccin")
+local CatppuccinPalettes = require("catppuccin.palettes")
 local MiniIcons = require("mini.icons")
 local NvimWebDevIcons = require("nvim-web-devicons")
 local Snacks = require("snacks")
@@ -112,8 +75,9 @@ local TreeSitter = require("nvim-treesitter")
 local MiniFiles = require("mini.files")
 local Harpoon = require("harpoon")
 local GitSigns = require("gitsigns")
-local LuaLine = require("lualine")
 local Bufferline = require("bufferline")
+local ScrollBar = require("scrollbar")
+local LuaLine = require("lualine")
 local Noice = require("noice")
 local LazyDev = require("lazydev")
 
@@ -210,6 +174,24 @@ Bufferline.setup({
 		end,
 	},
 })
+local colors = CatppuccinPalettes.get_palette("mocha")
+ScrollBar.setup({
+	hide_if_all_visible = true,
+	handle = {
+		color = colors.overlay2,
+	},
+	handlers = {
+		gitsigns = true,
+	},
+	marks = {
+		Search = { color = colors.yellow },
+		Error = { color = colors.red },
+		Warn = { color = colors.peach },
+		Info = { color = colors.text },
+		Hint = { color = colors.teal },
+		Misc = { color = colors.mauve },
+	},
+})
 Noice.setup({
 	lsp = {
 		override = {
@@ -228,6 +210,7 @@ Noice.setup({
 		enabled = false,
 	},
 })
+
 WhichKey.add({
 	{ "<leader>f", group = "files" },
 	{ "<leader>b", group = "buffers" },
@@ -289,7 +272,6 @@ vim.api.nvim_create_autocmd("UIEnter", {
 		-- stylua: ignore end
 	end,
 })
-
 vim.api.nvim_create_autocmd("User", {
 	pattern = "MiniFilesActionRename",
 	callback = function(event)
