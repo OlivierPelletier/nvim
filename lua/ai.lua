@@ -1,21 +1,14 @@
+require("util")
+
 vim.pack.add({
 	{ src = "https://github.com/fang2hou/blink-copilot" },
 })
 
-local MasonRegistry = require("mason-registry")
-
 local languageServersAndTools = {
-  "copilot-language-server"
+	"copilot-language-server",
 }
 
-MasonRegistry.refresh(function()
-	for _, tool in ipairs(languageServersAndTools) do
-		local p = MasonRegistry.get_package(tool)
-		if not p:is_installed() then
-			p:install()
-		end
-	end
-end)
+MasonCheckAndInstallPackages(languageServersAndTools)
 
 vim.lsp.enable({ "copilot" })
 

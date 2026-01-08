@@ -1,4 +1,4 @@
-local MasonRegistry = require("mason-registry")
+require("util")
 
 local languageServersAndTools = {
 	"gofumpt",
@@ -6,14 +6,7 @@ local languageServersAndTools = {
 	"gopls",
 }
 
-MasonRegistry.refresh(function()
-	for _, tool in ipairs(languageServersAndTools) do
-		local p = MasonRegistry.get_package(tool)
-		if not p:is_installed() then
-			p:install()
-		end
-	end
-end)
+MasonCheckAndInstallPackages(languageServersAndTools)
 
 vim.lsp.config("gopls", {
 	settings = {

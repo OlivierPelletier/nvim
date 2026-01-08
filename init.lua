@@ -63,6 +63,7 @@ vim.pack.add({
 	{ src = "https://github.com/MunifTanjim/nui.nvim" },
 	{ src = "https://github.com/folke/noice.nvim" },
 	{ src = "https://github.com/folke/lazydev.nvim" },
+	{ src = "https://github.com/mason-org/mason.nvim" },
 })
 
 local Catppuccin = require("catppuccin")
@@ -80,6 +81,7 @@ local ScrollBar = require("scrollbar")
 local LuaLine = require("lualine")
 local Noice = require("noice")
 local LazyDev = require("lazydev")
+local Mason = require("mason")
 
 -- stylua: ignore start
 vim.keymap.set("n", "J", "gJ", { noremap = true, silent = true })
@@ -210,6 +212,7 @@ Noice.setup({
 		enabled = false,
 	},
 })
+Mason.setup()
 
 WhichKey.add({
 	{ "<leader>f", group = "files" },

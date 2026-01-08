@@ -1,6 +1,7 @@
+require("util")
+
 vim.pack.add({
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
-	{ src = "https://github.com/mason-org/mason.nvim" },
 	{ src = "https://github.com/stevearc/conform.nvim" },
 	{ src = "https://github.com/saghen/blink.cmp" },
 })
@@ -11,7 +12,7 @@ local languageServersAndTools = {
 	"pyright",
 	"terraform-ls",
 	"yaml-language-server",
-  --
+	--
 	"black",
 	"gofumpt",
 	"goimports",
@@ -21,20 +22,34 @@ local languageServersAndTools = {
 	"stylua",
 }
 
-local Mason = require("mason")
-local MasonRegistry = require("mason-registry")
 local Conform = require("conform")
 local Blink = require("blink.cmp")
 
-Mason.setup()
 Conform.setup({
 	formatters_by_ft = {
+		astro = { "prettierd" },
+		css = { "prettierd" },
 		go = { "goimports", "gofumpt" },
+		graphql = { "prettierd" },
+		html = { "prettierd" },
 		java = { "google-java-format" },
 		javascript = { "prettierd" },
+		javascriptreact = { "prettierd" },
+		json = { "prettierd" },
+		jsonc = { "prettierd" },
+		less = { "prettierd" },
 		lua = { "stylua" },
+		markdown = { "prettierd" },
+		["markdown.mdx"] = { "prettierd" },
 		python = { "isort", "black" },
 		rust = { lsp_format = "fallback" },
+		scss = { "prettierd" },
+		svelte = { "prettierd" },
+		toml = { "prettierd" },
+		typescript = { "prettierd" },
+		typescriptreact = { "prettierd" },
+		vue = { "prettierd" },
+		yaml = { "prettierd" },
 	},
 	default_format_opts = {
 		lsp_format = "fallback",
@@ -132,14 +147,7 @@ vim.keymap.set("n",  "<leader>ss", Snacks.picker.lsp_symbols, { desc = "Symbols"
 vim.keymap.set("n",  "<leader>sS", Snacks.picker.lsp_workspace_symbols, { desc = "Workspace Symbols"})
 -- stylua: ignore end
 
-MasonRegistry.refresh(function()
-	for _, tool in ipairs(languageServersAndTools) do
-		local p = MasonRegistry.get_package(tool)
-		if not p:is_installed() then
-			p:install()
-		end
-	end
-end)
+MasonCheckAndInstallPackages(languageServersAndTools)
 
 vim.lsp.config("*", {
 	capabilities = {
