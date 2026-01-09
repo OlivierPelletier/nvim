@@ -138,8 +138,8 @@ Blink.setup({
 
 -- stylua: ignore start
 vim.keymap.set("n", "<C-b>", "<Plug>(nvim.lsp.ctrl-s)")
-vim.keymap.set("n", "<a-n>", function() Snacks.words.jump(vim.v.count1, true) end, { desc = "Next Reference", })
-vim.keymap.set("n", "<a-p>", function() Snacks.words.jump(-vim.v.count1, true) end, { desc = "Prev Reference", })
+vim.keymap.set("n", "<M-n>", function() Snacks.words.jump(vim.v.count1, true) end, { desc = "Next Reference", })
+vim.keymap.set("n", "<M-p>", function() Snacks.words.jump(-vim.v.count1, true) end, { desc = "Prev Reference", })
 vim.keymap.set("n", "<leader>cC", vim.lsp.codelens.refresh, { desc = "Refresh & Display Codelens" })
 vim.keymap.set("n", "<leader>cR", function() Snacks.rename.rename_file() end, { desc = "Rename File" })
 vim.keymap.set("n", "<leader>cl", function() Snacks.picker.lsp_config() end, { desc = "Lsp Info" })

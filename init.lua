@@ -87,6 +87,7 @@ local WhichKey = require("which-key")
 vim.keymap.set("i", "<C-n>", "<cmd>enew<CR>", { desc = "New Buffer" })
 vim.keymap.set("i", "<C-s>", "<cmd>write<CR>", { desc = "Save" })
 vim.keymap.set("i", "<C-x>", "<cmd>noh<CR>", { desc = "Remove Search Highlights" })
+vim.keymap.set("n", "<C-w><space>",function() WhichKey.show({ keys = "<c-w>", loop = true }) end, { desc = "Hydra Mode" })
 vim.keymap.set("n", "<M-/>", function()	Harpoon.ui:toggle_quick_menu(Harpoon:list())end, { desc = "Harpoon Quick Menu" })
 vim.keymap.set("n", "<M-1>", function()	Harpoon:list():select(1)end, { desc = "Harpoon Select 1" })
 vim.keymap.set("n", "<M-2>", function()	Harpoon:list():select(2)end, { desc = "Harpoon Select 2" })
@@ -99,7 +100,7 @@ vim.keymap.set("n", "<leader><space>", function()	Snacks.picker.smart({ hidden =
 vim.keymap.set("n", "<leader>bb", "<cmd>b#<CR>", { desc = "Previous Buffer" })
 vim.keymap.set("n", "<leader>bd", function()	Snacks.bufdelete()end, { desc = "Delete Buffer" })
 vim.keymap.set("n", "<leader>bo", Snacks.bufdelete.other, { desc = "Delete Other Buffers" })
-vim.keymap.set("n", "<leader>e", MiniFiles.open, { desc = "Files Explorer" })
+vim.keymap.set("n", "<leader>d", function() Snacks.picker.diagnostics() end, { desc = "Notifications" })
 vim.keymap.set("n", "<leader>fM", function()	MiniFiles.open(vim.uv.cwd())end, { desc = "Files Explorer (cwd)" })
 vim.keymap.set("n", "<leader>fm", function()	MiniFiles.open(vim.api.nvim_buf_get_name(0))end, { desc = "Files Explorer" })
 vim.keymap.set("n", "<leader>gd", function()	Snacks.picker.git_diff()end, { desc = "Git Diff (Hunks)" })
@@ -161,6 +162,14 @@ GitSigns.setup()
 LuaLine.setup({
 	options = {
 		globalstatus = true,
+	},
+	sections = {
+		lualine_a = { "mode" },
+		lualine_b = { "branch", "diff", "diagnostics" },
+		lualine_c = { "filename" },
+		lualine_x = { "lsp_status", "encoding", "filetype" },
+		lualine_y = { "progress" },
+		lualine_z = { "location" },
 	},
 })
 Bufferline.setup({
