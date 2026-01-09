@@ -38,10 +38,10 @@ vim.diagnostic.config({
 
 -- stylua: ignore start
 local languageTreeSitters = {
-  "bash", "c", "cpp", "css", "csv", "diff", "fish", "go", "gomod", "gosum", "gowork", "graphql", "groovy",
-  "hcl", "html", "java", "javascript", "jsdoc", "json", "lua", "luadoc", "luap", "make", "markdown", "markdown_inline",
-  "printf", "properties", "python", "query", "regex", "requirements", "ron", "rust", "scss", "sql", "terraform", "tmux",
-  "toml", "tsx", "typescript", "vim", "vimdoc", "vue", "xml", "yaml",
+  "bash", "c", "cpp", "css", "csv", "diff", "fish", "go", "gomod", "gosum", "gowork", "graphql", "groovy", "hcl", "html",
+  "java", "javascript", "jsdoc", "json", "lua", "luadoc", "luap", "make", "markdown", "markdown_inline", "printf",
+  "properties", "python", "query", "regex", "requirements", "ron", "rust", "scss", "sql", "terraform", "tmux", "toml",
+  "tsx", "typescript", "vim", "vimdoc", "vue", "xml", "yaml",
 }
 -- stylua: ignore start
 
