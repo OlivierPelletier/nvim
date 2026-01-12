@@ -5,6 +5,13 @@ vim.pack.add({
 	{ src = "https://github.com/kristijanhusak/vim-dadbod-ui" },
 })
 
+local languageServersAndTools = { "sqruff" }
+
+MasonCheckAndInstallPackages(languageServersAndTools)
+
+vim.lsp.config("sqruff", {})
+vim.lsp.enable("sqruff")
+
 vim.g.db_ui_auto_execute_table_helpers = 1
 vim.g.db_ui_save_location = vim.fn.stdpath("data") .. "/dadbod_ui"
 vim.g.db_ui_show_database_icon = true

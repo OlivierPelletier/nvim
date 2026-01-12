@@ -166,7 +166,20 @@ LuaLine.setup({
 	sections = {
 		lualine_a = { "mode" },
 		lualine_b = { "branch", "diff", "diagnostics" },
-		lualine_c = { "filename" },
+		lualine_c = {
+			{
+				function()
+					local reg = vim.fn.reg_recording()
+					if reg == "" then
+						return ""
+					end
+					return "recording to @" .. reg
+				end,
+				color = function()
+					return { fg = Snacks.util.color("Constant") }
+				end,
+			},
+		},
 		lualine_x = { "lsp_status", "encoding", "filetype" },
 		lualine_y = { "progress" },
 		lualine_z = { "location" },
