@@ -1,7 +1,7 @@
 require("util")
 vim.pack.add({
 	"https://github.com/MeanderingProgrammer/render-markdown.nvim",
-  "https://github.com/iamcco/markdown-preview.nvim"
+  "https://github.com/OlivierPelletier/markdown-preview.nvim"
 })
 
 local languageServersAndTools = {
