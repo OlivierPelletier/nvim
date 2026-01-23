@@ -294,6 +294,7 @@ vim.api.nvim_create_autocmd("UIEnter", {
 		Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
 		Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
 		Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
+		Snacks.toggle.option("linebreak", { name = "Line Break" }):map("<leader>uW")
 		Snacks.toggle.treesitter():map("<leader>uT")		Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>ub")
 		-- stylua: ignore end
 	end,
