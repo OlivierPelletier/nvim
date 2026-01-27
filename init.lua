@@ -246,7 +246,7 @@ WhichKey.add({
 	{ "<leader>s", group = "search" },
 	{ "<leader>t", group = "test" },
 	{ "<leader>u", group = "toggles" },
-	{ "<leader>x", group = "lsp extra" },
+	{ "<leader>x", group = "extra" },
 })
 
 vim.api.nvim_create_autocmd("FileType", {
