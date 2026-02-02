@@ -249,6 +249,7 @@ WhichKey.add({
 	{ "<leader>t", group = "test" },
 	{ "<leader>u", group = "toggles" },
 	{ "<leader>x", group = "extra" },
+	{ "<leader>9", group = "99" },
 })
 
 vim.api.nvim_create_autocmd("FileType", {

@@ -2,6 +2,7 @@ require("util")
 
 vim.pack.add({
 	{ src = "https://github.com/fang2hou/blink-copilot" },
+	{ src = "https://github.com/ThePrimeagen/99" },
 })
 
 local languageServersAndTools = {
@@ -9,6 +10,37 @@ local languageServersAndTools = {
 }
 
 MasonCheckAndInstallPackages(languageServersAndTools)
+
+local nineNine = require("99")
+
+local cwd = vim.uv.cwd()
+local basename = vim.fs.basename(cwd)
+nineNine.setup({
+	logger = {
+		level = nineNine.DEBUG,
+		path = "/tmp/" .. basename .. ".99.debug",
+		print_on_error = true,
+	},
+
+	completion = nil,
+
+	md_files = {
+		"AGENT.md",
+	},
+	model = "github-copilot/claude-sonnet-4.5",
+})
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "typescript", "lua" },
+	callback = function(args)
+    -- stylua: ignore start
+		vim.keymap.set("n", "<leader>9f", function() nineNine.fill_in_function() end, { desc = "99 Fill In", buffer = args.buf })
+		vim.keymap.set("n", "<leader>9F", function() nineNine.fill_in_function_prompt() end, { desc = "99 Fill In Prompt", buffer = args.buf })
+		vim.keymap.set("v", "<leader>9f", function() nineNine.visual() end, { desc = "99 Visual Fill In", buffer = args.buf })
+		vim.keymap.set("v", "<leader>9F", function() nineNine.visual_prompt() end, { desc = "99 Visual Fill In Prompt", buffer = args.buf })
+		vim.keymap.set({ "n", "s" }, "<leader>9s", function() nineNine.stop_all_requests() end, { desc = "99 Stop All Request", buffer = args.buf })
+		-- stylua: ignore end
+	end,
+})
 
 vim.lsp.enable({ "copilot" })
 
