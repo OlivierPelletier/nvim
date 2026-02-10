@@ -117,6 +117,10 @@
       "rev": "48934b49a2363b49ae1d698ed4cb30fb79d7efe8",
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
+    "sidekick.nvim": {
+      "rev": "c2bdf8cfcd87a6be5f8b84322c1b5052e78e302e",
+      "src": "https://github.com/folke/sidekick.nvim"
+    },
     "snacks.nvim": {
       "rev": "fe7cfe9800a182274d0f868a74b7263b8c0c020b",
       "src": "https://github.com/folke/snacks.nvim"

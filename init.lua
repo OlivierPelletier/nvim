@@ -250,6 +250,7 @@ WhichKey.add({
 	{ "<leader>u", group = "toggles" },
 	{ "<leader>x", group = "extra" },
 	{ "<leader>9", group = "99" },
+	{ "<leader>a", group = "ai" },
 })
 
 vim.api.nvim_create_autocmd("FileType", {

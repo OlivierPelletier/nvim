@@ -3,6 +3,7 @@ require("util")
 vim.pack.add({
 	{ src = "https://github.com/fang2hou/blink-copilot" },
 	{ src = "https://github.com/ThePrimeagen/99" },
+	{ src = "https://github.com/folke/sidekick.nvim" },
 })
 
 local languageServersAndTools = {
@@ -12,6 +13,13 @@ local languageServersAndTools = {
 MasonCheckAndInstallPackages(languageServersAndTools)
 
 local nineNine = require("99")
+local sidekickCli = require("sidekick.cli")
+
+-- stylua: ignore start
+vim.keymap.set("n", "<leader>aa", function() sidekickCli.toggle({ name = "opencode" }) end, { desc = "Sidekick Toggle CLI" })
+vim.keymap.set({ "n", "t", "i", "x" }, "<C-.>", function() sidekickCli.toggle({ name = "opencode" }) end, { desc = "Sidekick Toggle CLI" })
+vim.keymap.set({ "n", "t", "i", "x" }, "<M-ù>", function() sidekickCli.toggle({ name = "opencode" }) end, { desc = "Sidekick Toggle CLI" })
+-- stylua: ignore end
 
 local cwd = vim.uv.cwd()
 local basename = vim.fs.basename(cwd)
