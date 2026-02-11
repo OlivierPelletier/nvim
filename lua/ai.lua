@@ -13,6 +13,7 @@ local languageServersAndTools = {
 MasonCheckAndInstallPackages(languageServersAndTools)
 
 local nineNine = require("99")
+local sidekick = require("sidekick")
 local sidekickCli = require("sidekick.cli")
 
 -- stylua: ignore start
@@ -21,22 +22,37 @@ vim.keymap.set({ "n", "t", "i", "x" }, "<C-.>", function() sidekickCli.toggle({ 
 vim.keymap.set({ "n", "t", "i", "x" }, "<M-ù>", function() sidekickCli.toggle({ name = "opencode" }) end, { desc = "Sidekick Toggle CLI" })
 -- stylua: ignore end
 
-local cwd = vim.uv.cwd()
-local basename = vim.fs.basename(cwd)
 nineNine.setup({
 	logger = {
 		level = nineNine.DEBUG,
-		path = "/tmp/" .. basename .. ".99.debug",
+		path = "/tmp/" .. vim.fs.basename(vim.uv.cwd()) .. ".99.debug",
 		print_on_error = true,
 	},
-
 	completion = nil,
-
 	md_files = {
 		"AGENT.md",
 	},
-	model = "github-copilot/claude-sonnet-4.5",
+	model = "github-copilot/gpt-5.2-codex",
 })
+sidekick.setup({
+	nes = {
+		enabled = false,
+	},
+	cli = {
+		win = {
+			layout = "float",
+			float = {
+				width = 1.0,
+				height = 1.0,
+			},
+		},
+	},
+	mux = {
+		backend = "zellij",
+		enabled = true,
+	},
+})
+
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "typescript", "lua" },
 	callback = function(args)
