@@ -7,7 +7,7 @@ vim.pack.add({
 })
 
 local languageServersAndTools = {
-  "fish-lsp",
+	"fish-lsp",
 	"json-lsp",
 	"lua-language-server",
 	"pyright",
@@ -20,7 +20,7 @@ local languageServersAndTools = {
 	"google-java-format",
 	"isort",
 	"prettierd",
-  "sqlfluff",
+	"sqlfluff",
 	"stylua",
 	"xmlformatter",
 }
@@ -73,13 +73,6 @@ Blink.setup({
 	fuzzy = { implementation = "lua" },
 	sources = {
 		default = { "lsp", "path", "snippets", "buffer" },
-		providers = {
-			copilot = {
-				name = "copilot",
-				module = "blink-copilot",
-				async = true,
-			},
-		},
 	},
 	completion = {
 		trigger = {
@@ -198,7 +191,7 @@ vim.lsp.config("lua_ls", {
 	},
 })
 vim.lsp.enable({
-  "fish_lsp",
+	"fish_lsp",
 	"json-ls",
 	"lua_ls",
 	"pyright",
@@ -232,11 +225,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end
 
 		if client:supports_method("textDocument/codeLens") then
-			vim.lsp.codelens.refresh({ bufnr = buffer })
+			vim.lsp.codelens.enable(true, { bufnr = buffer })
 			vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
 				buffer = buffer,
 				callback = function()
-					vim.lsp.codelens.refresh({ bufnr = buffer })
+					vim.lsp.codelens.enable(true, { bufnr = buffer })
 				end,
 			})
 		end

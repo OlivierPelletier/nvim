@@ -12,19 +12,20 @@ local languageServersAndTools = {
 
 MasonCheckAndInstallPackages(languageServersAndTools)
 
-local nineNine = require("99")
-local sidekick = require("sidekick")
-local sidekickCli = require("sidekick.cli")
+local NineNine = require("99")
+local Sidekick = require("sidekick")
+local SidekickCli = require("sidekick.cli")
+local Blink = require("blink.cmp")
 
 -- stylua: ignore start
-vim.keymap.set("n", "<leader>aa", function() sidekickCli.toggle({ name = "opencode" }) end, { desc = "Sidekick Toggle CLI" })
-vim.keymap.set({ "n", "t", "i", "x" }, "<C-.>", function() sidekickCli.toggle({ name = "opencode" }) end, { desc = "Sidekick Toggle CLI" })
-vim.keymap.set({ "n", "t", "i", "x" }, "<M-ù>", function() sidekickCli.toggle({ name = "opencode" }) end, { desc = "Sidekick Toggle CLI" })
+vim.keymap.set("n", "<leader>aa", function() SidekickCli.toggle({ name = "opencode" }) end, { desc = "Sidekick Toggle CLI" })
+vim.keymap.set({ "n", "t", "i", "x" }, "<C-.>", function() SidekickCli.toggle({ name = "opencode" }) end, { desc = "Sidekick Toggle CLI" })
+vim.keymap.set({ "n", "t", "i", "x" }, "<M-ù>", function() SidekickCli.toggle({ name = "opencode" }) end, { desc = "Sidekick Toggle CLI" })
 -- stylua: ignore end
 
-nineNine.setup({
+NineNine.setup({
 	logger = {
-		level = nineNine.DEBUG,
+		level = NineNine.DEBUG,
 		path = "/tmp/" .. vim.fs.basename(vim.uv.cwd()) .. ".99.debug",
 		print_on_error = true,
 	},
@@ -34,7 +35,7 @@ nineNine.setup({
 	},
 	model = "github-copilot/gpt-5.2-codex",
 })
-sidekick.setup({
+Sidekick.setup({
 	nes = {
 		enabled = false,
 	},
@@ -53,15 +54,21 @@ sidekick.setup({
 	},
 })
 
+Blink.add_source_provider("copilot", {
+	name = "copilot",
+	module = "blink-copilot",
+	async = true,
+})
+
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "typescript", "lua" },
 	callback = function(args)
     -- stylua: ignore start
-		vim.keymap.set("n", "<leader>9f", function() nineNine.fill_in_function() end, { desc = "99 Fill In", buffer = args.buf })
-		vim.keymap.set("n", "<leader>9F", function() nineNine.fill_in_function_prompt() end, { desc = "99 Fill In Prompt", buffer = args.buf })
-		vim.keymap.set("v", "<leader>9f", function() nineNine.visual() end, { desc = "99 Visual Fill In", buffer = args.buf })
-		vim.keymap.set("v", "<leader>9F", function() nineNine.visual_prompt() end, { desc = "99 Visual Fill In Prompt", buffer = args.buf })
-		vim.keymap.set({ "n", "s" }, "<leader>9s", function() nineNine.stop_all_requests() end, { desc = "99 Stop All Request", buffer = args.buf })
+		vim.keymap.set("n", "<leader>9f", function() NineNine.fill_in_function() end, { desc = "99 Fill In", buffer = args.buf })
+		vim.keymap.set("n", "<leader>9F", function() NineNine.fill_in_function_prompt() end, { desc = "99 Fill In Prompt", buffer = args.buf })
+		vim.keymap.set("v", "<leader>9f", function() NineNine.visual() end, { desc = "99 Visual Fill In", buffer = args.buf })
+		vim.keymap.set("v", "<leader>9F", function() NineNine.visual_prompt() end, { desc = "99 Visual Fill In Prompt", buffer = args.buf })
+		vim.keymap.set({ "n", "s" }, "<leader>9s", function() NineNine.stop_all_requests() end, { desc = "99 Stop All Request", buffer = args.buf })
 		-- stylua: ignore end
 	end,
 })
