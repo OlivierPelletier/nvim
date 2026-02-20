@@ -19,6 +19,7 @@ local Blink = require("blink.cmp")
 
 -- stylua: ignore start
 vim.keymap.set("n", "<leader>aa", function() SidekickCli.toggle({ name = "opencode" }) end, { desc = "Sidekick Toggle CLI" })
+vim.keymap.set("n", "<leader>ap", function() SidekickCli.prompt() end, { desc = "Sidekick Toggle Prompts" })
 vim.keymap.set({ "n", "t", "i", "x" }, "<C-.>", function() SidekickCli.toggle({ name = "opencode" }) end, { desc = "Sidekick Toggle CLI" })
 vim.keymap.set({ "n", "t", "i", "x" }, "<M-ù>", function() SidekickCli.toggle({ name = "opencode" }) end, { desc = "Sidekick Toggle CLI" })
 -- stylua: ignore end
