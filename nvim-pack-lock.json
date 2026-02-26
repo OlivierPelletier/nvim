@@ -1,7 +1,7 @@
 {
   "plugins": {
     "99": {
-      "rev": "2c771814e1d95280ee99545de61b28dfa773c5fa",
+      "rev": "6a64e0b2f4c7f1e3911db1f8318e5d7c68cb8dff",
       "src": "https://github.com/ThePrimeagen/99"
     },
     "blink-copilot": {
