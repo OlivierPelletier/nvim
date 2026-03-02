@@ -1,7 +1,7 @@
 {
   "plugins": {
     "99": {
-      "rev": "23fd5532a6cda8e899c7f6dc20e522c40b17485f",
+      "rev": "cd07a91be0e67a4fcbbb3a455123849ebaa4a140",
       "src": "https://github.com/ThePrimeagen/99"
     },
     "blink-copilot": {
@@ -9,7 +9,7 @@
       "src": "https://github.com/fang2hou/blink-copilot"
     },
     "blink.cmp": {
-      "rev": "b650e976a927be6b46487a0a610b75af111376c5",
+      "rev": "28badce4a2e919d39a0e2a0b268ec74e68f28396",
       "src": "https://github.com/saghen/blink.cmp"
     },
     "bufferline.nvim": {

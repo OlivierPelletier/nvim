@@ -20,12 +20,13 @@ local Blink = require("blink.cmp")
 -- stylua: ignore start
 vim.keymap.set("n", "<leader>9l", function() NineNine.view_logs() end, { desc = "99 Logs" })
 vim.keymap.set("n", "<leader>9s", function() NineNine.search() end, { desc = "99 Search" })
-vim.keymap.set("n", "<leader>aa", function() SidekickCli.toggle({ name = "opencode" }) end, { desc = "Sidekick Toggle CLI" })
+vim.keymap.set("n", "<leader>9t", function() NineNine.open() end, { desc = "99 Tutorial" })
+vim.keymap.set("n", "<leader>aa", function() SidekickCli.toggle({ name = "opencode", focus = true }) end, { desc = "Sidekick Toggle CLI" })
 vim.keymap.set("n", "<leader>ap", function() SidekickCli.prompt() end, { desc = "Sidekick Toggle Prompts" })
 vim.keymap.set("v", "<leader>9f", function() NineNine.visual() end, { desc = "99 Visual Fill In" })
 vim.keymap.set({ "n", "s" }, "<leader>9x", function() NineNine.stop_all_requests() end, { desc = "99 Stop All Request" })
-vim.keymap.set({ "n", "t", "i", "x" }, "<C-.>", function() SidekickCli.toggle({ name = "opencode" }) end, { desc = "Sidekick Toggle CLI" })
-vim.keymap.set({ "n", "t", "i", "x" }, "<M-ù>", function() SidekickCli.toggle({ name = "opencode" }) end, { desc = "Sidekick Toggle CLI" })
+vim.keymap.set({ "n", "t", "i", "x" }, "<C-.>", function() SidekickCli.toggle({ name = "opencode", focus = true }) end, { desc = "Sidekick Toggle CLI" })
+vim.keymap.set({ "n", "t", "i", "x" }, "<M-ù>", function() SidekickCli.toggle({ name = "opencode", focus = true }) end, { desc = "Sidekick Toggle CLI" })
 -- stylua: ignore end
 
 NineNine.setup({
@@ -39,6 +40,7 @@ NineNine.setup({
 	md_files = {
 		"AGENT.md",
 	},
+  provider = NineNine.Providers.OpenCodeProvider,
 	model = "github-copilot/claude-sonnet-4.5",
 })
 Sidekick.setup({
@@ -53,10 +55,10 @@ Sidekick.setup({
 				height = 1.0,
 			},
 		},
-	},
-	mux = {
-		backend = "zellij",
-		enabled = true,
+		mux = {
+			backend = "zellij",
+			enabled = true,
+		},
 	},
 })
 
