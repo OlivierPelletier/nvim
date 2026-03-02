@@ -154,6 +154,28 @@ vim.keymap.set({ "n", "x" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "Co
 vim.keymap.set({ "n", "x" }, "<leader>cc", vim.lsp.codelens.run, { desc = "Run Codelens" })
 -- stylua: ignore end
 
+vim.api.nvim_create_user_command("LspRestart", function()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local clients = vim.lsp.get_clients({ bufnr = bufnr })
+
+	if #clients == 0 then
+		vim.notify("No LSP clients attached", vim.log.levels.WARN)
+		return
+	end
+
+	local configs = {}
+	for _, client in ipairs(clients) do
+		configs[#configs + 1] = client.config
+		client:stop(true)
+	end
+
+	vim.defer_fn(function()
+		for _, config in ipairs(configs) do
+			vim.lsp.start(config, { bufnr = bufnr })
+		end
+	end, 100)
+end, { desc = "Restart LSP clients for current buffer" })
+
 vim.lsp.config("*", {
 	capabilities = {
 		workspace = {

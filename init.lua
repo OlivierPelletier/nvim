@@ -126,6 +126,14 @@ vim.keymap.set({ "n", "v", "x" }, "<C-z>", "<cmd>noh<CR>", { desc = "Remove Sear
 vim.keymap.set({ "o", "x" }, "ih", GitSigns.select_hunk, { desc = "Inner Hunk" })
 -- stylua: ignore end
 
+vim.api.nvim_create_user_command("PackSync", function()
+	vim.pack.update(nil, { force = true, target = "lockfile" })
+end, { desc = "Sync plugins to lockfile" })
+
+vim.api.nvim_create_user_command("PackUpdate", function()
+	vim.pack.update(nil, { target = "version" })
+end, { desc = "Update plugins to version specs" })
+
 Catppuccin.setup({
 	transparent_background = true,
 	float = {
