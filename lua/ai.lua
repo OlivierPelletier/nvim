@@ -30,18 +30,12 @@ vim.keymap.set({ "n", "t", "i", "x" }, "<M-ù>", function() SidekickCli.toggle({
 -- stylua: ignore end
 
 NineNine.setup({
-	logger = {
-		level = NineNine.DEBUG,
-		path = "/tmp/" .. vim.fs.basename(vim.uv.cwd()) .. ".99.debug",
-		print_on_error = true,
-	},
-	tmp_dir = "./tmp",
 	completion = nil,
 	md_files = {
-		"AGENT.md",
+		"AGENTS.md",
 	},
   provider = NineNine.Providers.OpenCodeProvider,
-	model = "github-copilot/claude-sonnet-4.5",
+	model = "github-copilot/gpt-5.2-codex",
 })
 Sidekick.setup({
 	nes = {
