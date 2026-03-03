@@ -27,8 +27,12 @@ vim.o.showtabline = 0
 vim.o.statusline = " "
 vim.o.termguicolors = true
 vim.o.winborder = "rounded"
+vim.o.foldenable = true
+vim.o.foldlevel = 99
+vim.o.foldlevelstart = 99
 
 vim.o.clipboard = "unnamedplus"
+vim.o.mousescroll = "ver:1,hor:1"
 
 vim.g.mapleader = " "
 
@@ -266,7 +270,6 @@ vim.api.nvim_create_autocmd("FileType", {
 		local ft, _ = ev.match, vim.treesitter.language.get_lang(ev.match)
 		for _, iLang in ipairs(TreeSitter.get_installed()) do
 			if iLang == ft then
-				vim.wo.foldlevel = 99
 				vim.wo.foldmethod = "expr"
 				vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 				vim.treesitter.start()
