@@ -53,6 +53,10 @@
       "rev": "44d1e90e1f66e077268191e3ee9d2ac97cc18e65",
       "src": "https://github.com/mason-org/mason.nvim"
     },
+    "mini.bufremove": {
+      "rev": "ee69f823f84508c556127a5882760d9783692023",
+      "src": "https://github.com/nvim-mini/mini.bufremove"
+    },
     "mini.files": {
       "rev": "57eb96a828f80efb8095a611e3aafcfa43548f8b",
       "src": "https://github.com/nvim-mini/mini.files"

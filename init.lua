@@ -66,6 +66,7 @@ vim.pack.add({
 	{ src = "https://github.com/nvim-lualine/lualine.nvim" },
 	{ src = "https://github.com/nvim-mini/mini.files" },
 	{ src = "https://github.com/nvim-mini/mini.icons" },
+	{ src = "https://github.com/nvim-mini/mini.bufremove" },
 	{ src = "https://github.com/nvim-tree/nvim-web-devicons" },
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 	{ src = "https://github.com/petertriho/nvim-scrollbar" },
@@ -82,6 +83,7 @@ local LuaLine = require("lualine")
 local Mason = require("mason")
 local MiniFiles = require("mini.files")
 local MiniIcons = require("mini.icons")
+local MiniBufremove = require("mini.bufremove")
 local Noice = require("noice")
 local NvimWebDevIcons = require("nvim-web-devicons")
 local ScrollBar = require("scrollbar")
@@ -318,6 +320,17 @@ vim.api.nvim_create_autocmd("User", {
 	pattern = "MiniFilesActionRename",
 	callback = function(event)
 		Snacks.rename.on_rename_file(event.data.from, event.data.to)
+	end,
+})
+vim.api.nvim_create_autocmd("User", {
+	pattern = "MiniFilesActionDelete",
+	callback = function(args)
+		local buf_id = vim.fn.bufnr(args.data.from)
+		if buf_id == -1 then
+			return
+		end
+
+		MiniBufremove.delete(buf_id, true)
 	end,
 })
 vim.api.nvim_create_autocmd("TextYankPost", {
