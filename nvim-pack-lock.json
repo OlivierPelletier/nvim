@@ -125,6 +125,10 @@
       "rev": "1c958131c083c8557ea499fdb08c88b8afb05c4e",
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
+    "rustaceanvim": {
+      "rev": "f2f0c1231a5b019dbc1fd6dafac1751c878925a3",
+      "src": "https://github.com/mrcjkb/rustaceanvim"
+    },
     "sidekick.nvim": {
       "rev": "c2bdf8cfcd87a6be5f8b84322c1b5052e78e302e",
       "src": "https://github.com/folke/sidekick.nvim"
