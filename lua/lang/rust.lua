@@ -7,9 +7,14 @@ vim.pack.add({
 local languageServersAndTools = {
 	"rust-analyzer",
 	"codelldb",
+	"bacon",
+	"bacon-ls",
 }
 
 MasonCheckAndInstallPackages(languageServersAndTools)
+
+vim.lsp.config("bacon_ls", {})
+vim.lsp.enable("bacon_ls")
 
 local codelldb = vim.fn.exepath("codelldb")
 local sysname = vim.uv.os_uname().sysname
@@ -19,8 +24,10 @@ local library_path = vim.fn.expand("$MASON/opt/lldb/lib/liblldb" .. codelldb_lib
 vim.g.rustaceanvim = {
 	server = {
 		on_attach = function(_, bufnr)
-			vim.keymap.set("n", "<leader>cR", function() vim.cmd.RustLsp("codeAction") end, { desc = "Code Action", buffer = bufnr })
-			vim.keymap.set("n", "<leader>dr", function() vim.cmd.RustLsp("debuggables") end, { desc = "Rust Debuggables", buffer = bufnr })
+      -- stylua: ignore start
+			vim.keymap.set("n", "<leader>xa", function() vim.cmd.RustLsp("codeAction") end, { desc = "Code Action", buffer = bufnr })
+			vim.keymap.set("n", "<leader>xd", function() vim.cmd.RustLsp("debuggables") end, { desc = "Rust Debuggables", buffer = bufnr })
+			-- stylua: ignore end
 		end,
 		default_settings = {
 			["rust-analyzer"] = {
@@ -31,14 +38,9 @@ vim.g.rustaceanvim = {
 						enable = true,
 					},
 				},
-				checkOnSave = {
-					enable = true,
-					command = "clippy",
-				},
+				checkOnSave = false,
 				diagnostics = {
-					enable = true,
-					disabled = {},
-					experimental = { enable = true },
+					enable = false,
 				},
 				procMacro = {
 					enable = true,
