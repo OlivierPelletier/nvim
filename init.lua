@@ -40,17 +40,6 @@ vim.diagnostic.config({
 	virtual_text = true,
 })
 
--- stylua: ignore start
-local languageTreeSitters = {
-  "bash", "c", "cpp", "css", "csv", "diff", "fish", "go", "gomod", "gosum",
-  "gowork", "graphql", "groovy", "hcl", "html", "http", "java", "javascript",
-  "jsdoc", "json", "lua", "luadoc", "luap", "make", "markdown",
-  "markdown_inline", "mermaid", "printf", "properties", "python", "query",
-  "regex", "requirements", "ron", "rust", "scss", "sql", "terraform", "tmux",
-  "toml", "tsx", "typescript", "vim", "vimdoc", "vue", "xml", "yaml",
-}
--- stylua: ignore start
-
 vim.pack.add({
 	{ src = "https://github.com/MunifTanjim/nui.nvim" },
 	{ src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2" },
@@ -68,7 +57,6 @@ vim.pack.add({
 	{ src = "https://github.com/nvim-mini/mini.icons" },
 	{ src = "https://github.com/nvim-mini/mini.bufremove" },
 	{ src = "https://github.com/nvim-tree/nvim-web-devicons" },
-	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 	{ src = "https://github.com/petertriho/nvim-scrollbar" },
 	{ src = "https://github.com/rcarriga/nvim-notify" },
 })
@@ -88,7 +76,6 @@ local Noice = require("noice")
 local NvimWebDevIcons = require("nvim-web-devicons")
 local ScrollBar = require("scrollbar")
 local Snacks = require("snacks")
-local TreeSitter = require("nvim-treesitter")
 local WhichKey = require("which-key")
 
 -- stylua: ignore start
@@ -162,7 +149,6 @@ Snacks.setup({
 WhichKey.setup({
 	preset = "helix",
 })
-TreeSitter.install(languageTreeSitters)
 MiniFiles.setup({
 	windows = {
 		preview = true,
@@ -267,19 +253,6 @@ WhichKey.add({
 	{ "<leader>a", group = "ai" },
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-	callback = function(ev)
-		local ft, _ = ev.match, vim.treesitter.language.get_lang(ev.match)
-		for _, iLang in ipairs(TreeSitter.get_installed()) do
-			if iLang == ft then
-				vim.wo.foldmethod = "expr"
-				vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-				vim.treesitter.start()
-				return
-			end
-		end
-	end,
-})
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "lua" },
 	callback = function()

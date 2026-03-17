@@ -1,12 +1,26 @@
 require("util")
 
 vim.pack.add({
+	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
 	{ src = "https://github.com/saghen/blink.cmp" },
 	{ src = "https://github.com/stevearc/conform.nvim" },
 })
 
+-- stylua: ignore start
+local languageTreeSitters = {
+  "bash", "c", "cpp", "css", "csv", "diff", "fish", "go", "gomod", "gosum",
+  "gowork", "graphql", "groovy", "hcl", "html", "http", "java", "javascript",
+  "jsdoc", "json", "lua", "luadoc", "luap", "make", "markdown",
+  "markdown_inline", "mermaid", "printf", "properties", "python", "query",
+  "regex", "requirements", "ron", "rust", "scss", "sql", "terraform", "tmux",
+  "toml", "tsx", "typescript", "vim", "vimdoc", "vue", "xml", "yaml",
+}
+-- stylua: ignore start
+
 local languageServersAndTools = {
+  "tree-sitter-cli",
+  --
 	"fish-lsp",
 	"json-lsp",
 	"lua-language-server",
@@ -27,9 +41,11 @@ local languageServersAndTools = {
 
 MasonCheckAndInstallPackages(languageServersAndTools)
 
+local TreeSitter = require("nvim-treesitter")
 local Blink = require("blink.cmp")
 local Conform = require("conform")
 
+TreeSitter.install(languageTreeSitters)
 Conform.setup({
 	formatters = {
 		sqlfluff = {
@@ -219,6 +235,20 @@ vim.lsp.enable({
 	"pyright",
 	"terraformls",
 	"yamlls",
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	callback = function(ev)
+		local ft, _ = ev.match, vim.treesitter.language.get_lang(ev.match)
+		for _, iLang in ipairs(TreeSitter.get_installed()) do
+			if iLang == ft then
+				vim.wo.foldmethod = "expr"
+				vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+				vim.treesitter.start()
+				return
+			end
+		end
+	end,
 })
 
 -- inlayHint, folds and codeLens
