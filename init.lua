@@ -56,6 +56,7 @@ vim.pack.add({
 	{ src = "https://github.com/nvim-mini/mini.files" },
 	{ src = "https://github.com/nvim-mini/mini.icons" },
 	{ src = "https://github.com/nvim-mini/mini.bufremove" },
+	{ src = "https://github.com/nvim-mini/mini.hipatterns" },
 	{ src = "https://github.com/nvim-tree/nvim-web-devicons" },
 	{ src = "https://github.com/petertriho/nvim-scrollbar" },
 	{ src = "https://github.com/rcarriga/nvim-notify" },
@@ -72,6 +73,7 @@ local Mason = require("mason")
 local MiniFiles = require("mini.files")
 local MiniIcons = require("mini.icons")
 local MiniBufremove = require("mini.bufremove")
+local MiniHipatterns = require("mini.hipatterns")
 local Noice = require("noice")
 local NvimWebDevIcons = require("nvim-web-devicons")
 local ScrollBar = require("scrollbar")
@@ -157,6 +159,16 @@ MiniFiles.setup({
 	},
 	options = {
 		use_as_default_explorer = true,
+	},
+})
+MiniHipatterns.setup({
+	highlighters = {
+		fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "MiniHipatternsFixme" },
+		hack = { pattern = "%f[%w]()HACK()%f[%W]", group = "MiniHipatternsHack" },
+		todo = { pattern = "%f[%w]()TODO()%f[%W]", group = "MiniHipatternsTodo" },
+		note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "MiniHipatternsNote" },
+
+		hex_color = MiniHipatterns.gen_highlighter.hex_color(),
 	},
 })
 Harpoon.setup()
