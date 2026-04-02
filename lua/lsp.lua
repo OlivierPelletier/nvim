@@ -1,5 +1,3 @@
-require("util")
-
 vim.pack.add({
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
@@ -322,11 +320,11 @@ vim.diagnostic.config({
 	},
 })
 
-require("lang.java")
-require("lang.go")
-require("lang.rust")
-require("lang.vue")
-require("lang.csv")
-require("lang.sql")
-require("lang.markdown")
-require("lang.http")
+safe_require("lang.java")
+safe_require("lang.go")
+safe_require("lang.rust")
+safe_require("lang.vue")
+safe_require("lang.csv")
+safe_require("lang.sql")
+safe_require("lang.markdown")
+safe_require("lang.http")

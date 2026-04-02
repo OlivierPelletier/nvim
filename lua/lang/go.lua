@@ -1,5 +1,3 @@
-require("util")
-
 local languageServersAndTools = {
 	"gofumpt",
 	"goimports",

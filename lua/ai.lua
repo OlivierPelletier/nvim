@@ -1,5 +1,3 @@
-require("util")
-
 vim.pack.add({
 	{ src = "https://github.com/fang2hou/blink-copilot" },
 	{ src = "https://github.com/ThePrimeagen/99" },

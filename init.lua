@@ -1,3 +1,5 @@
+require("util")
+
 vim.api.nvim_exec2([[language en_CA.UTF-8]], { output = false })
 
 vim.o.number = true
@@ -327,9 +329,9 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 vim.cmd("colorscheme catppuccin-mocha")
 
-require("debugger")
-require("lsp")
-require("ai")
+safe_require("debugger")
+safe_require("lsp")
+safe_require("ai")
 
 local packagesToDelete = vim.iter(vim.pack.get())
 	:filter(function(x)

@@ -1,5 +1,3 @@
-require("util")
-
 vim.pack.add({
 	{ src = "https://github.com/mfussenegger/nvim-dap" },
 	{ src = "https://github.com/nvim-neotest/nvim-nio" },
