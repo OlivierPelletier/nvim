@@ -1,7 +1,7 @@
 vim.pack.add({
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
-	{ src = "https://github.com/saghen/blink.cmp" },
+	{ src = "https://github.com/saghen/blink.cmp", version = "v1" },
 	{ src = "https://github.com/stevearc/conform.nvim" },
 })
 
@@ -236,16 +236,11 @@ vim.lsp.enable({
 })
 
 vim.api.nvim_create_autocmd("FileType", {
-	callback = function(ev)
-		local ft, _ = ev.match, vim.treesitter.language.get_lang(ev.match)
-		for _, iLang in ipairs(TreeSitter.get_installed()) do
-			if iLang == ft then
-				vim.wo.foldmethod = "expr"
-				vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-				vim.treesitter.start()
-				return
-			end
-		end
+  pattern = languageTreeSitters,
+	callback = function()
+		vim.treesitter.start()
+		vim.wo.foldmethod = "expr"
+		vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 	end,
 })
 
